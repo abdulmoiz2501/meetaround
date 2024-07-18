@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:scratch_project/app/routes/app_pages.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -13,10 +14,12 @@ class HomeView extends GetView<HomeController> {
         title: const Text('HomeView'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'HomeView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: ElevatedButton(
+          child: Text('navigate'),
+          onPressed: () {
+            Get.toNamed(AppPages.SPLASH_SCREEN);
+          },
         ),
       ),
     );

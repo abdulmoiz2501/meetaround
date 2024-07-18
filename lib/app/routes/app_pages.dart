@@ -14,6 +14,7 @@ class AppPages {
 
   static const INITIAL = Routes.HOME;
   static const SPLASH_SCREEN = Routes.SPLASH_SCREEN;
+  static const ONVBOARDING = Routes.ONVBOARDING;
 
   static final routes = [
     GetPage(
