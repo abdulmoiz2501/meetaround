@@ -14,7 +14,8 @@ void main() {
       builder: (_, child) {
         return GetMaterialApp(
           title: "Application",
-          initialRoute: AppPages.INITIAL,
+          debugShowCheckedModeBanner: false,
+          initialRoute: AppPages.SPLASH_SCREEN,
           getPages: AppPages.routes,
         );
       },

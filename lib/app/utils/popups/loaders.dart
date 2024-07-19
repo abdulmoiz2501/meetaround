@@ -9,14 +9,14 @@ class VoidLoaders {
     Get.snackbar(title, message,
         isDismissible: true,
         shouldIconPulse: true,
-        colorText: VoidColors.white,
+        // colorText: VoidColors.white,
         backgroundColor: VoidColors.primary,
         snackPosition: SnackPosition.BOTTOM,
         duration: Duration(seconds: duration),
         margin: const EdgeInsets.all(20),
         icon: const Icon(
           Iconsax.tick_circle,
-          color: VoidColors.white,
+          // color: VoidColors.white,
         ));
   }
 
@@ -24,14 +24,14 @@ class VoidLoaders {
     Get.snackbar(title, message,
         isDismissible: true,
         shouldIconPulse: true,
-        colorText: VoidColors.white,
+        // colorText: VoidColors.white,
         backgroundColor: Colors.orange,
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 3),
         margin: const EdgeInsets.all(20),
         icon: const Icon(
           Iconsax.warning_2,
-          color: VoidColors.white,
+          // color: VoidColors.white,
         ));
   }
 
@@ -39,14 +39,14 @@ class VoidLoaders {
     Get.snackbar(title, message,
         isDismissible: true,
         shouldIconPulse: true,
-        colorText: VoidColors.white,
+        // colorText: VoidColors.white,
         backgroundColor: Colors.red.shade600,
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 3),
         margin: const EdgeInsets.all(20),
         icon: const Icon(
           Iconsax.danger,
-          color: VoidColors.white,
+          // color: VoidColors.white,
         ));
   }
 }
