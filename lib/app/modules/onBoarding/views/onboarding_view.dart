@@ -22,11 +22,14 @@ class OnBoardingView extends StatelessWidget {
     var currentIndex = 0.obs;
 
 
-    final List<Widget> onBoardingPAges = [
+    final List<Widget> onBoardingPages = [
       OnBoardingWidget(
         imagePath: VoidImages.firstOnBoarding,
         text: VoidTexts.firstOnBoarding,
         buttonText: 'Next',
+        onTap: () {
+          Get.toNamed(AppPages.SIGN_UP);
+        },
         onButtonPressed: () {
           swiperController.next();
         },
@@ -99,9 +102,9 @@ class OnBoardingView extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 5.0.h), // Add padding to push up the progress indicator
                 child: Swiper(
                   itemBuilder: (BuildContext context, int index) {
-                    return onBoardingPAges[index];
+                    return onBoardingPages[index];
                   },
-                  itemCount: onBoardingPAges.length,
+                  itemCount: onBoardingPages.length,
                   pagination: SwiperPagination(
                     alignment: Alignment.bottomCenter,
                     margin: EdgeInsets.only(bottom: 160.h),
@@ -114,7 +117,8 @@ class OnBoardingView extends StatelessWidget {
                   onIndexChanged: (index) {
 
                       currentIndex.value = index;
-                      if (index == onBoardingPAges.length - 1) {
+                      if (index == onBoardingPages.length -1) {
+                        // Get.toNamed(AppPages.SIGN_UP);
                         Future.delayed(Duration(seconds: 2), () {
                           Get.toNamed(AppPages.SIGN_UP);
                         }

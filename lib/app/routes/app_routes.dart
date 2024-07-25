@@ -3,7 +3,6 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
-  static const HOME = _Paths.HOME;
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
   static const SECOND_SPLASH = _Paths.SECOND_SPLASH;
   static const ONBOARDING = _Paths.ONBOARDING;
@@ -16,11 +15,13 @@ abstract class Routes {
   static const USER_LOCATION = _Paths.USER_LOCATION;
   static const WELCOME = _Paths.WELCOME;
   static const SIGN_IN = _Paths.SIGN_IN;
+  static const BOTTOM_NAV_BAR = _Paths.BOTTOM_NAV_BAR;
+  static const HOME_SCREEN = _Paths.HOME_SCREEN;
+  static const SUGGESTED_PEOPLE = _Paths.SUGGESTED_PEOPLE;
 }
 
 abstract class _Paths {
   _Paths._();
-  static const HOME = '/home';
   static const SPLASH_SCREEN = '/splash-screen';
   static const SECOND_SPLASH = '/splash-screen/second_splash_screen';
   static const ONBOARDING = '/onBoarding';
@@ -33,4 +34,7 @@ abstract class _Paths {
   static const USER_LOCATION = '/sign-up/user_location';
   static const WELCOME = '/sign-up/welcome';
   static const SIGN_IN = '/sign-in';
+  static const BOTTOM_NAV_BAR = '/bottom-nav-bar';
+  static const HOME_SCREEN = '/bottom-nav-bar/home_screen';
+  static const SUGGESTED_PEOPLE = '/bottom-nav-bar/suggested_people';
 }

@@ -15,6 +15,7 @@ class OnBoardingWidget extends StatelessWidget {
   final String buttonText;
   final double? fontSize;
   final VoidCallback onButtonPressed;
+  final VoidCallback? onTap;
   final bool showNextButton;
   final bool isCenteredText;
 
@@ -25,7 +26,10 @@ class OnBoardingWidget extends StatelessWidget {
     required this.buttonText,
     required this.onButtonPressed,
     this.showNextButton = false,
-    this.isCenteredText = false, this.subTitle, this.fontSize, this.titleSize, this.fontWeight,
+    this.isCenteredText = false,
+    this.subTitle, this.fontSize,
+    this.titleSize, this.fontWeight,
+    this.onTap,
   });
 
   @override
@@ -41,7 +45,7 @@ class OnBoardingWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: onButtonPressed,
+                  onPressed: onTap,
                   child: Text(
                     "Skip",
                     style: GoogleFonts.poppins(

@@ -6,15 +6,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:scratch_project/app/modules/signUp/views/get_user_location_view.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/widgets/music_genres_tile_widget.dart';
-
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
 import '../../../utils/constraints/text_strings.dart';
-import '../../../widgets/clickable_tile.dart';
 import '../../../widgets/custom_button.dart';
 import '../../../widgets/gender_selection_tile.dart';
 import '../controllers/sign_up_controller.dart';

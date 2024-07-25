@@ -1,19 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:scratch_project/app/modules/signUp/views/welcome_view.dart';
-import 'package:scratch_project/app/widgets/music_genres_tile_widget.dart';
-
 import '../../../routes/app_pages.dart';
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
 import '../../../utils/constraints/text_strings.dart';
-import '../../../widgets/clickable_tile.dart';
 import '../../../widgets/custom_button.dart';
 import '../controllers/sign_up_controller.dart';
 
@@ -91,8 +84,6 @@ class _GetUserLocationViewState extends State<GetUserLocationView> {
           ),
 
           SizedBox(height: 20.0.h,)
-
-
 
         ],
       ),

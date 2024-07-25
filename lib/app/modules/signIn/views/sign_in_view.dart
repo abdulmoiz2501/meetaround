@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../routes/app_pages.dart';
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
 import '../../../utils/constraints/text_strings.dart';
@@ -55,7 +56,7 @@ class SignInView extends GetView<SignInController> {
                 child: CustomButton(
                   text: VoidTexts.signIn,
                   onPressed: () {
-
+                    Get.toNamed(Routes.BOTTOM_NAV_BAR);
                   },
                   borderRadius: 24.r,
 
