@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
-import 'package:scratch_project/app/modules/bottomNavBar/views/home_screen_view.dart';
-import 'package:scratch_project/app/modules/bottomNavBar/views/suggested_people_view.dart';
 
+import '../modules/ChatScreen/bindings/chat_screen_binding.dart';
+import '../modules/ChatScreen/views/chat_screen_view.dart';
 import '../modules/bottomNavBar/bindings/bottom_nav_bar_binding.dart';
 import '../modules/bottomNavBar/views/bottom_nav_bar_view.dart';
+import '../modules/bottomNavBar/views/home_screen_view.dart';
+import '../modules/bottomNavBar/views/suggested_people_view.dart';
 import '../modules/onBoarding/bindings/onvboarding_binding.dart';
 import '../modules/onBoarding/views/onboarding_view.dart';
 import '../modules/signIn/bindings/sign_in_binding.dart';
@@ -109,6 +111,11 @@ class AppPages {
       name: _Paths.SUGGESTED_PEOPLE,
       page: () => SuggestedPeopleView(),
       binding: BottomNavBarBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHAT_SCREEN,
+      page: () => ChatScreenView(),
+      binding: ChatScreenBinding(),
     ),
   ];
 }

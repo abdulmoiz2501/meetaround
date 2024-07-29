@@ -6,6 +6,7 @@ import 'package:scratch_project/app/modules/bottomNavBar/views/home_screen_view.
 
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
+import '../../ChatScreen/views/chat_screen_view.dart';
 import '../controllers/bottom_nav_bar_controller.dart';
 
 class BottomNavBarView extends GetView<BottomNavBarController> {
@@ -16,7 +17,7 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
     HomeScreenView(),
     FavouriteScreen(),
     SearchScreen(),
-    MessageScreen(),
+    ChatScreenView(),
     PersonScreen(),
   ];
 
@@ -155,14 +156,3 @@ class PersonScreen extends StatelessWidget {
   }
 }
 
-class MessageScreen extends StatelessWidget {
-  const MessageScreen({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Message Screen')),
-    );
-  }
-}

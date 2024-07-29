@@ -18,6 +18,8 @@ abstract class Routes {
   static const BOTTOM_NAV_BAR = _Paths.BOTTOM_NAV_BAR;
   static const HOME_SCREEN = _Paths.HOME_SCREEN;
   static const SUGGESTED_PEOPLE = _Paths.SUGGESTED_PEOPLE;
+  static const NO_CHAT_SCREEN = _Paths.NO_CHAT_SCREEN;
+  static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
 }
 
 abstract class _Paths {
@@ -37,4 +39,6 @@ abstract class _Paths {
   static const BOTTOM_NAV_BAR = '/bottom-nav-bar';
   static const HOME_SCREEN = '/bottom-nav-bar/home_screen';
   static const SUGGESTED_PEOPLE = '/bottom-nav-bar/suggested_people';
+  static const NO_CHAT_SCREEN = '/no-chat-screen';
+  static const CHAT_SCREEN = '/chat-screen';
 }

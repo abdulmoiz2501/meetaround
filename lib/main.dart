@@ -15,7 +15,8 @@ void main() {
         return GetMaterialApp(
           title: "Application",
           debugShowCheckedModeBanner: false,
-          initialRoute: AppPages.SPLASH_SCREEN,
+          //initialRoute: AppPages.SPLASH_SCREEN,
+          initialRoute: AppPages.BOTTOM_NAV_BAR,
           getPages: AppPages.routes,
         );
       },
