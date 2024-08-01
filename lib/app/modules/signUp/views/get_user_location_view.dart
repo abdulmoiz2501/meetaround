@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../routes/app_pages.dart';
-import '../../../utils/constraints/colors.dart';
-import '../../../utils/constraints/image_strings.dart';
-import '../../../utils/constraints/text_strings.dart';
-import '../../../widgets/custom_button.dart';
+import 'package:scratch_project/app/routes/app_pages.dart';
+import 'package:scratch_project/app/utils/constraints/colors.dart';
+import 'package:scratch_project/app/utils/constraints/image_strings.dart';
+import 'package:scratch_project/app/utils/constraints/text_strings.dart';
+import 'package:scratch_project/app/widgets/custom_button.dart';
 import '../controllers/sign_up_controller.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
+import '../controllers/sign_up_controller.dart';
 
 class GetUserLocationView extends StatefulWidget {
-
   const GetUserLocationView({super.key});
 
   @override
@@ -51,43 +54,42 @@ class _GetUserLocationViewState extends State<GetUserLocationView> {
                   padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                   child: Text(
                     VoidTexts.getLocationTitle,
-                    // textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
-                        fontSize: 32.spMax,
-                        color: VoidColors.secondary,
-                        fontWeight: FontWeight.w600
+                      fontSize: 32.spMax,
+                      color: VoidColors.secondary,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
-                // Spacer(),
-
                 Center(
-                  child: Image.asset(VoidImages.getLocation,
-                  height: 150.h,
-                  width: 150.w,),
+                  child: Image.asset(
+                    VoidImages.getLocation,
+                    height: 150.h,
+                    width: 150.w,
+                  ),
                 ),
-
               ],
             ),
           ),
-          SizedBox(height: 150.0.h,),
+          SizedBox(height: 150.0.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0.w),
             child: CustomButton(
               text: 'Next',
-              onPressed: () {
-                Get.toNamed(Routes.WELCOME);
+              onPressed: () async {
+                try {
+                  await signUpController.getCurrentLocation();
+                  await signUpController.signUp();
+                } catch (e) {
+                  Get.snackbar('Error', e.toString());
+                }
               },
               borderRadius: 24.r,
-
             ),
           ),
-
-          SizedBox(height: 20.0.h,)
-
+          SizedBox(height: 20.0.h),
         ],
       ),
     );
   }
 }
-

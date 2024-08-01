@@ -52,7 +52,7 @@ class SignUpView extends GetView<SignUpController> {
               ),
               InkWell(
                 onTap: () {
-
+                     Get.toNamed(Routes.SIGN_IN);
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0.w, vertical: 5.0.h),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:scratch_project/app/modules/PastInterections/views/past_interections_view.dart';
+import 'package:scratch_project/app/modules/ProfileScreen/views/profile_screen_view.dart';
 import 'package:scratch_project/app/modules/bottomNavBar/views/home_screen_view.dart';
 
 import '../../../utils/constraints/colors.dart';
@@ -15,10 +17,10 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
 
   final List<Widget> _pages = [
     HomeScreenView(),
-    FavouriteScreen(),
+    PastInterectionsView(),
     SearchScreen(),
     ChatScreenView(),
-    PersonScreen(),
+    ProfileScreenView(),
   ];
 
   @override
@@ -121,16 +123,7 @@ class SelectBar extends StatelessWidget {
 //   }
 // }
 
-class FavouriteScreen extends StatelessWidget {
-  const FavouriteScreen({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Favourite Screen')),
-    );
-  }
-}
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
@@ -144,15 +137,5 @@ class SearchScreen extends StatelessWidget {
   }
 }
 
-class PersonScreen extends StatelessWidget {
-  const PersonScreen({super.key});
 
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Person Screen')),
-    );
-  }
-}
 

@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/signUp/controllers/sign_up_controller.dart';
 
 import '../../../routes/app_pages.dart';
 import '../../../utils/constraints/colors.dart';
@@ -15,6 +16,7 @@ class WelcomeView extends GetView {
   const WelcomeView({super.key});
   @override
   Widget build(BuildContext context) {
+    final signupController= Get.put(SignUpController());
     return Scaffold(
       backgroundColor: VoidColors.whiteColor,
       appBar: AppBar(
@@ -175,7 +177,8 @@ class WelcomeView extends GetView {
             child: CustomButton(
               text: 'I agree',
               onPressed: () {
-                Get.toNamed(Routes.SIGN_IN);
+                signupController.signUp();
+               
               },
               borderRadius: 24.r,
 

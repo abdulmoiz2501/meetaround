@@ -20,6 +20,14 @@ abstract class Routes {
   static const SUGGESTED_PEOPLE = _Paths.SUGGESTED_PEOPLE;
   static const NO_CHAT_SCREEN = _Paths.NO_CHAT_SCREEN;
   static const CHAT_SCREEN = _Paths.CHAT_SCREEN;
+  static const CHAT_DETAIL_SCREEN = _Paths.CHAT_DETAIL_SCREEN;
+  static const JAMMING_SCREEN = _Paths.JAMMING_SCREEN;
+  static const PAST_INTERECTIONS = _Paths.PAST_INTERECTIONS;
+  static const HOME = _Paths.HOME;
+  static const PROFILE_SCREEN = _Paths.PROFILE_SCREEN;
+  static const SETTINGS_SCREEN = _Paths.SETTINGS_SCREEN;
+  static const NOTIFICATION_SCREEN = _Paths.NOTIFICATION_SCREEN;
+  static const SERVICES = _Paths.SERVICES;
 }
 
 abstract class _Paths {
@@ -41,4 +49,12 @@ abstract class _Paths {
   static const SUGGESTED_PEOPLE = '/bottom-nav-bar/suggested_people';
   static const NO_CHAT_SCREEN = '/no-chat-screen';
   static const CHAT_SCREEN = '/chat-screen';
+  static const CHAT_DETAIL_SCREEN = '/chat-detail-screen';
+  static const JAMMING_SCREEN = '/jamming-screen';
+  static const PAST_INTERECTIONS = '/past-interections';
+  static const HOME = '/home';
+  static const PROFILE_SCREEN = '/profile-screen';
+  static const SETTINGS_SCREEN = '/settings-screen';
+  static const NOTIFICATION_SCREEN = '/notification-screen';
+  static const SERVICES = '/services';
 }

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/signUp/controllers/sign_up_controller.dart';
 import 'package:scratch_project/app/modules/signUp/views/select_gender_view.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 import 'package:scratch_project/app/utils/constraints/image_strings.dart';
@@ -23,7 +24,7 @@ class BirthDateView extends StatefulWidget {
 }
 
 class _BirthDateViewState extends State<BirthDateView> {
-  TextEditingController dateOfBirthController = TextEditingController();
+ final signUpController = Get.put(SignUpController());
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   Color hintTextColor = VoidColors.darkGrey;
   int age = 0;
@@ -37,7 +38,7 @@ class _BirthDateViewState extends State<BirthDateView> {
       maxTime: DateTime.now(),
       onConfirm: (date) {
         setState(() {
-          dateOfBirthController.text = "${date.day}/${date.month}/${date.year}";
+          signUpController.dateOfBirthController.text = "${date.day}/${date.month}/${date.year}";
           // age = _calculateAge(date);
         });
       },
@@ -110,7 +111,7 @@ class _BirthDateViewState extends State<BirthDateView> {
                 CustomTextFormField(
                   obscureText: false,
                   hint: 'dd/mm/yyyy',
-                  controller: dateOfBirthController,
+                  controller: signUpController.dateOfBirthController,
                   readOnly: true,
                   onTap: () {
                     _showDatePicker();

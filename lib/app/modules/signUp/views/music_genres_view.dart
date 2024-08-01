@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/signUp/controllers/sign_up_controller.dart';
 import 'package:scratch_project/app/widgets/music_genres_tile_widget.dart';
 
 import '../../../routes/app_pages.dart';
@@ -10,12 +10,8 @@ import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
 import '../../../utils/constraints/text_strings.dart';
 import '../../../widgets/custom_button.dart';
-import '../../../widgets/gender_selection_tile.dart';
-import 'add_picture_view.dart';
-
 
 class MusicGenresView extends StatefulWidget {
-
   const MusicGenresView({super.key});
 
   @override
@@ -23,7 +19,7 @@ class MusicGenresView extends StatefulWidget {
 }
 
 class _MusicGenresViewState extends State<MusicGenresView> {
-  var selectedOption = ''.obs;
+  final SignUpController controller = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
@@ -52,36 +48,28 @@ class _MusicGenresViewState extends State<MusicGenresView> {
                   padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                   child: Text(
                     VoidTexts.musicGenresTitle,
-                    // textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                         fontSize: 32.spMax,
                         color: VoidColors.secondary,
-                        fontWeight: FontWeight.w600
-                    ),
+                        fontWeight: FontWeight.w600),
                   ),
                 ),
-                SizedBox(
-                    height: 5.0.h
-                ),
+                SizedBox(height: 5.0.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                   child: Text(
                     VoidTexts.musicGenresSubTitle,
-                    // textAlign: TextAlign.center,
                     style: GoogleFonts.poppins(
                         fontSize: 12.spMax,
                         color: VoidColors.darkGrey,
-                        fontWeight: FontWeight.w400
-                    ),
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
-                SizedBox(
-                    height: 20.0.h
-                ),
+                SizedBox(height: 20.0.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-                  child: Obx(() =>
-                    MusicGenreTileWidget(
+                  child: Obx(
+                    () => MusicGenreTileWidget(
                       options: [
                         'Pop',
                         'Rock',
@@ -100,19 +88,14 @@ class _MusicGenresViewState extends State<MusicGenresView> {
                         'Afrobeat',
                         'Reggae'
                       ],
-                      initialSelected: selectedOption.value,
+                      initialSelected: controller.selectedMusicGenres.toList(),
                       onSelected: (value) {
-                          selectedOption.value = value;
-
+                        controller.toggleMusicGenre(value);
                       },
                     ),
                   ),
                 ),
-
-                SizedBox(
-                  height: 50.0.h,
-                ),
-
+                SizedBox(height: 50.0.h),
               ],
             ),
           ),
@@ -121,25 +104,15 @@ class _MusicGenresViewState extends State<MusicGenresView> {
             child: CustomButton(
               text: 'Next',
               onPressed: () {
-               Get.toNamed(Routes.ADD_PICTURE);
+                Get.toNamed(Routes.ADD_PICTURE);
               },
-              borderRadius: 24.r,
-
+              borderRadius: 12.0.r,
+              textColor: VoidColors.whiteColor,
             ),
           ),
-
-          SizedBox(height: 20.0.h,)
-
-
-
+          SizedBox(height: 40.0.h),
         ],
       ),
     );
   }
 }
-
-
-
-
-
-

@@ -4,12 +4,13 @@ import 'package:scratch_project/app/utils/constraints/colors.dart';
 class MusicGenreTileWidget extends StatefulWidget {
   final List<String> options;
   final ValueChanged<String> onSelected;
-  final String initialSelected;
+  final List<String> initialSelected;
 
-  const MusicGenreTileWidget({super.key,
+  const MusicGenreTileWidget({
+    super.key,
     required this.options,
     required this.onSelected,
-    this.initialSelected = '',
+    required this.initialSelected,
   });
 
   @override
@@ -17,12 +18,12 @@ class MusicGenreTileWidget extends StatefulWidget {
 }
 
 class _MusicGenreTileWidgetState extends State<MusicGenreTileWidget> {
-  String? selectedOption;
+  late List<String> selectedOptions;
 
   @override
   void initState() {
     super.initState();
-    selectedOption = widget.initialSelected;
+    selectedOptions = widget.initialSelected;
   }
 
   @override
@@ -32,11 +33,13 @@ class _MusicGenreTileWidgetState extends State<MusicGenreTileWidget> {
       spacing: 5.0,
       runSpacing: 2.0,
       children: widget.options.map((option) {
-        bool isSelected = selectedOption == option;
+        bool isSelected = selectedOptions.contains(option);
         return ElevatedButton(
           onPressed: () {
             setState(() {
-              selectedOption = option;
+              isSelected
+                  ? selectedOptions.remove(option)
+                  : selectedOptions.add(option);
             });
             widget.onSelected(option);
           },

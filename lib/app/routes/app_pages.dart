@@ -1,7 +1,21 @@
 import 'package:get/get.dart';
 
+import '../modules/ChatDetailScreen/bindings/chat_detail_screen_binding.dart';
+import '../modules/ChatDetailScreen/views/chat_detail_screen_view.dart';
 import '../modules/ChatScreen/bindings/chat_screen_binding.dart';
 import '../modules/ChatScreen/views/chat_screen_view.dart';
+import '../modules/JammingScreen/bindings/jamming_screen_binding.dart';
+import '../modules/JammingScreen/views/jamming_screen_view.dart';
+import '../modules/NotificationScreen/bindings/notification_screen_binding.dart';
+import '../modules/NotificationScreen/views/notification_screen_view.dart';
+import '../modules/PastInterections/bindings/past_interections_binding.dart';
+import '../modules/PastInterections/views/past_interections_view.dart';
+import '../modules/ProfileScreen/bindings/profile_screen_binding.dart';
+import '../modules/ProfileScreen/views/profile_screen_view.dart';
+import '../modules/Services/bindings/services_binding.dart';
+import '../modules/Services/views/services_view.dart';
+import '../modules/SettingsScreen/bindings/settings_screen_binding.dart';
+import '../modules/SettingsScreen/views/settings_screen_view.dart';
 import '../modules/bottomNavBar/bindings/bottom_nav_bar_binding.dart';
 import '../modules/bottomNavBar/views/bottom_nav_bar_view.dart';
 import '../modules/bottomNavBar/views/home_screen_view.dart';
@@ -116,6 +130,41 @@ class AppPages {
       name: _Paths.CHAT_SCREEN,
       page: () => ChatScreenView(),
       binding: ChatScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.CHAT_DETAIL_SCREEN,
+      page: () => ChatDetailScreenView(),
+      binding: ChatDetailScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.JAMMING_SCREEN,
+      page: () => JammingScreenView(),
+      binding: JammingScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.PAST_INTERECTIONS,
+      page: () => const PastInterectionsView(),
+      binding: PastInterectionsBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE_SCREEN,
+      page: () => const ProfileScreenView(),
+      binding: ProfileScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS_SCREEN,
+      page: () => const SettingsScreenView(),
+      binding: SettingsScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATION_SCREEN,
+      page: () => const NotificationScreenView(),
+      binding: NotificationScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.SERVICES,
+      page: () => const ServicesView(),
+      binding: ServicesBinding(),
     ),
   ];
 }

@@ -12,6 +12,7 @@ class ChatScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:VoidColors.secondary ,
       appBar: hasMessages ? _buildChatAppBar() : _buildNoMessagesAppBar(),
       body: hasMessages ? _buildChatBody() : _buildNoMessagesBody(),
     );
@@ -100,6 +101,8 @@ class ChatScreenView extends StatelessWidget {
         ),
       ),
     );
+ 
+ 
   }
 
   // Body for when there are no messages
@@ -170,7 +173,7 @@ class ChatScreenView extends StatelessWidget {
               itemCount: 5, // Placeholder item count
               itemBuilder: (context, index) {
                 return ChatListItem(
-                  imageUrl: 'assets/icons/userAvatar.png', // Placeholder image
+                  imageUrl: 'assets/icons/chat.png', // Placeholder image
                   name: 'User Name',
                   lastMessage: 'Last message preview',
                   time: '11:20am',

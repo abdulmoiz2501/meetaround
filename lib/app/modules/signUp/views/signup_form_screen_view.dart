@@ -75,13 +75,14 @@ class SignupFormScreenView extends GetView<SignUpController> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0.w),
                   child: CustomButton(
-                    text: 'Sign up',
-                    onPressed: () {
-                      Get.toNamed(Routes.DATE_OF_BIRTH);
-                    },
-                    borderRadius: 24.r,
-
-                  ),
+  text: 'Sign up',
+  onPressed: () {
+    
+      signUpController.emailVerify();
+  
+  },
+  borderRadius: 24.r,
+),
                 ),
 
                 Row(
