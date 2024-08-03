@@ -23,7 +23,7 @@ class OnBoardingWidget extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.text,
-    required this.buttonText,
+   required this.buttonText,
     required this.onButtonPressed,
     this.showNextButton = false,
     this.isCenteredText = false,
@@ -35,7 +35,7 @@ class OnBoardingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(top: 72.h, right: 25.0.w, left: 25.0.w),
+      padding: EdgeInsets.only(top: 60.h, right: 25.0.w, left: 25.0.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: showNextButton ? MainAxisAlignment.center : MainAxisAlignment.spaceBetween,
@@ -57,13 +57,14 @@ class OnBoardingWidget extends StatelessWidget {
                 ),
               ],
             ),
+
+             SizedBox(height: 70.h,),
           Expanded(
-            child: SizedBox(
-              height: 202.h,
-              width: 285.w,
-              child: Image.asset(imagePath),
-            ),
+            child:
+               Image.asset(imagePath),
+          
           ),
+         SizedBox(height: 100.h,),
           Expanded(
             child: Text(
               text,
@@ -96,13 +97,16 @@ class OnBoardingWidget extends StatelessWidget {
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 15.0.h),
-                  child: CustomButton(
-                    text: buttonText,
-                    width: 123.w,
-                    onPressed: onButtonPressed,
-                    textColor: VoidColors.blackColor,
-                    color: VoidColors.whiteColor,
-                    borderRadius: 40.0.r,
+                  child: SizedBox(
+                    height: 30.h,
+                    child: CustomButton(
+                      text: buttonText,
+                      width: 123.w,
+                      onPressed: onButtonPressed,
+                      textColor: VoidColors.blackColor,
+                      color: VoidColors.whiteColor,
+                      borderRadius: 40.0.r,
+                    ),
                   ),
                 ),
               ],

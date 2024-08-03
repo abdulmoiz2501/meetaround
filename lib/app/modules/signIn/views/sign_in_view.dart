@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../../routes/app_pages.dart';
+import 'package:scratch_project/app/modules/signUp/views/signup_form_screen_view.dart';
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
 import '../../../utils/constraints/text_strings.dart';
@@ -17,8 +16,6 @@ class SignInView extends GetView<SignInController> {
   @override
   Widget build(BuildContext context) {
     final SignInController _controller = Get.find<SignInController>();
-
- 
 
     return Scaffold(
       backgroundColor: VoidColors.whiteColor,
@@ -41,14 +38,14 @@ class SignInView extends GetView<SignInController> {
             ),
             SizedBox(height: 40.0.h),
             CustomTextFormField(
-              controller: controller.emailController,
+              controller: _controller.emailController,
               obscureText: false,
               hint: 'Email',
               prefix: Icon(Icons.email_outlined,
                 size: 24.sp, color: VoidColors.darkGrey),
             ),
             CustomTextFormField(
-              controller: controller.passwordController,
+              controller: _controller.passwordController,
               obscureText: true,
               hint: 'Password',
               prefix: Icon(Icons.lock_outline,
@@ -57,16 +54,23 @@ class SignInView extends GetView<SignInController> {
             SizedBox(height: 30.0.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-              child: CustomButton(
-                text: VoidTexts.signIn,
-                onPressed: () {
-                  _controller.signIn(
-                    _controller.emailController.text,
-                    _controller.passwordController.text,
-                  );
-                },
-                borderRadius: 24.r,
-              ),
+              child: Obx(() {
+                return _controller.loading.value
+                    ? CustomButtonWithLoader(
+                        
+                        borderRadius: 24.r,
+                      )
+                    : CustomButton(
+                        text: VoidTexts.signIn,
+                        onPressed: () {
+                          _controller.signIn(
+                            _controller.emailController.text,
+                            _controller.passwordController.text,
+                          );
+                        },
+                        borderRadius: 24.r,
+                      );
+              }),
             ),
             SizedBox(height: 30.h),
             Padding(
@@ -129,7 +133,7 @@ class SignInView extends GetView<SignInController> {
                 ),
                 InkWell(
                   onTap: () {
-                    // Handle sign-up navigation
+                    Get.to(()=>SignupFormScreenView());
                   },
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.0.w, vertical: 5.0.h),

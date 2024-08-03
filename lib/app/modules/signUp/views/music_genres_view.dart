@@ -104,6 +104,10 @@ class _MusicGenresViewState extends State<MusicGenresView> {
             child: CustomButton(
               text: 'Next',
               onPressed: () {
+                 controller.selectedMusicGenres.isEmpty?Get.snackbar('Error', 'Atleast One Generes Must be Selected',
+        backgroundColor: VoidColors.primary,
+        colorText: VoidColors.whiteColor,
+        snackPosition: SnackPosition.BOTTOM):
                 Get.toNamed(Routes.ADD_PICTURE);
               },
               borderRadius: 12.0.r,

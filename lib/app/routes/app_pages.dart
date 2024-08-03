@@ -12,6 +12,8 @@ import '../modules/PastInterections/bindings/past_interections_binding.dart';
 import '../modules/PastInterections/views/past_interections_view.dart';
 import '../modules/ProfileScreen/bindings/profile_screen_binding.dart';
 import '../modules/ProfileScreen/views/profile_screen_view.dart';
+import '../modules/SearchScreen/bindings/search_screen_binding.dart';
+import '../modules/SearchScreen/views/search_screen_view.dart';
 import '../modules/Services/bindings/services_binding.dart';
 import '../modules/Services/views/services_view.dart';
 import '../modules/SettingsScreen/bindings/settings_screen_binding.dart';
@@ -165,6 +167,11 @@ class AppPages {
       name: _Paths.SERVICES,
       page: () => const ServicesView(),
       binding: ServicesBinding(),
+    ),
+    GetPage(
+      name: _Paths.SEARCH_SCREEN,
+      page: () =>  SearchScreen(),
+      binding: SearchScreenBinding(),
     ),
   ];
 }

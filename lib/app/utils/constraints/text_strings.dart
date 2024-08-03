@@ -41,7 +41,7 @@ class VoidTexts {
   static const signUp = "Sign up";
   static const meetAround = "MeetAround";
   static const suggestPeople = "Suggested People";
-  static const topPicks = "Top Picks to enjoy jamming:";
+ // static const topPicks = "Top Picks to enjoy jamming:";
 
 
 }

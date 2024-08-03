@@ -125,6 +125,11 @@ class _BirthDateViewState extends State<BirthDateView> {
             child: CustomButton(
               text: 'Next',
               onPressed: () {
+                 signUpController.dateOfBirthController.text.isEmpty?Get.snackbar('Error', 'Date of Birth cannot be empty',
+        backgroundColor: VoidColors.primary,
+        colorText: VoidColors.whiteColor,
+        snackPosition: SnackPosition.BOTTOM):
+    
                 Get.toNamed(Routes.SELECT_GENDER_VIEW);
               },
               borderRadius: 24.r,

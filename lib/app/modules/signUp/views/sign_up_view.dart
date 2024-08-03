@@ -37,7 +37,8 @@ class SignUpView extends GetView<SignUpController> {
             },
             borderRadius: 13.r,
 
-          ),
+          ),SizedBox(height: 15.h,),
+
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

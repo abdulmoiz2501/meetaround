@@ -28,6 +28,7 @@ abstract class Routes {
   static const SETTINGS_SCREEN = _Paths.SETTINGS_SCREEN;
   static const NOTIFICATION_SCREEN = _Paths.NOTIFICATION_SCREEN;
   static const SERVICES = _Paths.SERVICES;
+  static const SEARCH_SCREEN = _Paths.SEARCH_SCREEN;
 }
 
 abstract class _Paths {
@@ -57,4 +58,5 @@ abstract class _Paths {
   static const SETTINGS_SCREEN = '/settings-screen';
   static const NOTIFICATION_SCREEN = '/notification-screen';
   static const SERVICES = '/services';
+  static const SEARCH_SCREEN = '/search-screen';
 }

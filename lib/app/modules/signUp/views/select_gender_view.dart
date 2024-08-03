@@ -96,6 +96,10 @@ class SelectGenderView extends StatelessWidget {
             child: CustomButton(
               text: 'Next',
               onPressed: () {
+                genderController.selectedGender.isEmpty?Get.snackbar('Error', 'Please Select Gender',
+        backgroundColor: VoidColors.primary,
+        colorText: VoidColors.whiteColor,
+        snackPosition: SnackPosition.BOTTOM):
                 Get.toNamed(Routes.MUSIC_GENRE);
               },
               borderRadius: 24.r,

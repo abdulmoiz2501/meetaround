@@ -58,3 +58,51 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
+
+
+
+class CustomButtonWithLoader extends StatelessWidget {
+  const CustomButtonWithLoader({
+    super.key,
+   
+   // this.color,
+    this.width,
+   
+    this.borderRadius,
+    this.height,
+  });
+
+ // final Color? color;
+  final double? width;
+
+  final double? borderRadius;
+  final double? height;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width ?? Get.width - 30.w,
+      height: height ?? 52.h,
+      child: ElevatedButton(
+        onPressed: (){},
+        style: ButtonStyle(
+          fixedSize: WidgetStatePropertyAll<Size>(
+            Size(Get.width, 52.h),
+          ),
+          backgroundColor:
+          WidgetStateProperty.all<Color>( VoidColors.secondary),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius ?? 13.r),
+            ),
+          ),
+        ),
+       
+        child: Center(
+          child:
+          CircularProgressIndicator(color: VoidColors.whiteColor,)
+        )
+      ),
+    );
+  }
+}

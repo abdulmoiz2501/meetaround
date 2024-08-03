@@ -4,7 +4,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:scratch_project/app/modules/PastInterections/views/past_interections_view.dart';
 import 'package:scratch_project/app/modules/ProfileScreen/views/profile_screen_view.dart';
+import 'package:scratch_project/app/modules/SearchScreen/views/search_screen_view.dart';
 import 'package:scratch_project/app/modules/bottomNavBar/views/home_screen_view.dart';
+import 'package:scratch_project/app/routes/app_pages.dart';
+import 'package:scratch_project/app/utils/constraints/text_strings.dart';
+import 'package:scratch_project/app/widgets/homeHeaderWidget.dart';
 
 import '../../../utils/constraints/colors.dart';
 import '../../../utils/constraints/image_strings.dart';
@@ -18,7 +22,7 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
   final List<Widget> _pages = [
     HomeScreenView(),
     PastInterectionsView(),
-    SearchScreen(),
+   SearchScreen(),
     ChatScreenView(),
     ProfileScreenView(),
   ];
@@ -122,20 +126,6 @@ class SelectBar extends StatelessWidget {
 //     );
 //   }
 // }
-
-
-
-class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(child: Text('Search Screen')),
-    );
-  }
-}
 
 
 

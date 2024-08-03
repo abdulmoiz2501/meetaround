@@ -74,7 +74,14 @@ class _GetUserLocationViewState extends State<GetUserLocationView> {
           SizedBox(height: 150.0.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-            child: CustomButton(
+            child: 
+            signUpController.loading.value
+                    ? CustomButtonWithLoader(
+                        
+                        borderRadius: 24.r,
+                      )
+                    : 
+            CustomButton(
               text: 'Next',
               onPressed: () async {
                 try {

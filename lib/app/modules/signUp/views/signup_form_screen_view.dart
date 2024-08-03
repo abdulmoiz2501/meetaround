@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/signIn/views/sign_in_view.dart';
 import 'package:scratch_project/app/utils/constraints/image_strings.dart';
 
 import '../../../routes/app_pages.dart';
@@ -78,7 +79,10 @@ class SignupFormScreenView extends GetView<SignUpController> {
   text: 'Sign up',
   onPressed: () {
     
-      signUpController.emailVerify();
+      signUpController.accept.value?signUpController.emailVerify():Get.snackbar('Error', 'Accept Terms and Conditions',
+          backgroundColor: VoidColors.primary,
+          colorText: VoidColors.whiteColor,
+          snackPosition: SnackPosition.BOTTOM);
   
   },
   borderRadius: 24.r,
@@ -191,14 +195,19 @@ class SignupFormScreenView extends GetView<SignUpController> {
                       },
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 15.0.w, vertical: 5.0.h),
-                        child: Text(
-                          VoidTexts.signIn,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.poppins(
-                              fontSize: 12.spMax,
-                              decoration: TextDecoration.underline,
-                              color: VoidColors.blueColor,
-                              fontWeight: FontWeight.w400
+                        child: GestureDetector(
+                          onTap: (){
+                            Get.to(()=>SignInView());
+                          },
+                          child: Text(
+                            VoidTexts.signIn,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.poppins(
+                                fontSize: 12.spMax,
+                                decoration: TextDecoration.underline,
+                                color: VoidColors.blueColor,
+                                fontWeight: FontWeight.w400
+                            ),
                           ),
                         ),
                       ),

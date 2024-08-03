@@ -178,6 +178,10 @@ class _AddPictureViewState extends State<AddPictureView> {
             child: CustomButton(
               text: 'Next',
               onPressed: () {
+                signUpController.imgFile.value == null?Get.snackbar('Error', 'Select Image',
+        backgroundColor: VoidColors.primary,
+        colorText: VoidColors.whiteColor,
+        snackPosition: SnackPosition.BOTTOM):
                 Get.toNamed(Routes.USER_LOCATION);
               },
               borderRadius: 24.r,

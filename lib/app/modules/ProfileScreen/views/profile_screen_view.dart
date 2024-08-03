@@ -231,6 +231,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
                             );
                           }),
                         ),
+                    
                       ],
                     )
                  
