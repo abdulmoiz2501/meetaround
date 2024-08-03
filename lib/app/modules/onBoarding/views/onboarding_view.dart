@@ -30,7 +30,6 @@ class OnBoardingView extends StatelessWidget {
             curve: Curves.easeInOut,
           );
         },
-        isCenteredText: true,
       ),
       OnBoardingWidget(
         imagePath: VoidImages.thirdOnBoarding,
