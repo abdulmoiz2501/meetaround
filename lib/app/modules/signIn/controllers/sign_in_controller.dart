@@ -1,8 +1,8 @@
-import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constants.dart';
 import 'package:scratch_project/app/utils/constraints/api_constants.dart';
@@ -18,11 +18,13 @@ class SignInController extends GetxController {
   var id = ''.obs;
 
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: ['email'],
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/userinfo.profile',
+    ],
   );
 
   Future<void> signIn(String email, String password) async {
-    // Validate if any fields are empty
     if (email.isEmpty) {
       Get.snackbar('Error', 'Email cannot be empty',
           backgroundColor: VoidColors.primary,
@@ -38,7 +40,6 @@ class SignInController extends GetxController {
       return;
     }
 
-    // Validate email format
     String emailPattern = r'^[^@]+@[^@]+\.[^@]+';
     RegExp emailRegExp = RegExp(emailPattern);
     if (!emailRegExp.hasMatch(email)) {
@@ -69,8 +70,6 @@ class SignInController extends GetxController {
         responseData.value = data;
         token.value = data['token'];
         id.value = data['data']['id'].toString();
-        print("***********************");
-        print(responseData);
         Get.toNamed(Routes.BOTTOM_NAV_BAR);
       } else {
         Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
@@ -84,46 +83,41 @@ class SignInController extends GetxController {
           backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
-
     }
   }
 
   Future<void> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
-        return;
-      }
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+        final response = await http.post(
+          Uri.parse('YOUR_BACKEND_ENDPOINT'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({'idToken': googleAuth.idToken}),
+        );
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final response = await http.post(
-        Uri.parse("$baseUrl/google_login"),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode({
-          'idToken': googleAuth.idToken,
-          'accessToken': googleAuth.accessToken,
-        }),
-      );
+        final data = jsonDecode(response.body);
 
-      final data = jsonDecode(response.body);
-
-      if (data['responseCode'] == '4000') {
-        responseData.value = data;
-        token.value = data['token'];
-        id.value = data['data']['id'].toString();
-        print("***********************");
-        print(responseData);
-        Get.toNamed(Routes.BOTTOM_NAV_BAR);
+        if (data['responseCode'] == '4000') {
+          responseData.value = data;
+          token.value = data['token'];
+          id.value = data['data']['id'].toString();
+          Get.toNamed(Routes.BOTTOM_NAV_BAR);
+        } else {
+          Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
+              backgroundColor: VoidColors.primary,
+              colorText: VoidColors.whiteColor,
+              snackPosition: SnackPosition.BOTTOM);
+        }
       } else {
-        Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
+        Get.snackbar('Error', 'Google Sign-In failed',
             backgroundColor: VoidColors.primary,
             colorText: VoidColors.whiteColor,
             snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
-      Get.snackbar('Error', 'An error occurred during Google Sign-In. Please try again.',
+      Get.snackbar('Error', 'An error occurred. Please try again.',
           backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
