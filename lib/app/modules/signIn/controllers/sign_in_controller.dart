@@ -1,7 +1,8 @@
-import 'dart:convert'; // For jsonEncode and jsonDecode
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constants.dart';
 import 'package:scratch_project/app/utils/constraints/api_constants.dart';
@@ -13,8 +14,12 @@ class SignInController extends GetxController {
   final String _url = "$baseUrl/login";
   final RxMap<String, dynamic> responseData = <String, dynamic>{}.obs;
   var loading = false.obs;
-  var token = ''.obs; // Store token here
-  var id = ''.obs; // Store id here
+  var token = ''.obs;
+  var id = ''.obs;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: ['email'],
+  );
 
   Future<void> signIn(String email, String password) async {
     // Validate if any fields are empty
@@ -45,7 +50,7 @@ class SignInController extends GetxController {
     }
 
     try {
-      loading.value = true; // Set loading to true
+      loading.value = true;
       final response = await http.post(
         Uri.parse(_url),
         headers: {
@@ -56,33 +61,72 @@ class SignInController extends GetxController {
           'password': password,
         }),
       );
-      loading.value = false; // Set loading to false
+      loading.value = false;
 
       final data = jsonDecode(response.body);
 
       if (data['responseCode'] == '4000') {
         responseData.value = data;
-        token.value = data['token']; // Store token here
-         id.value = data['data']['id'].toString();
+        token.value = data['token'];
+        id.value = data['data']['id'].toString();
         print("***********************");
         print(responseData);
-        // Navigate to the next screen
         Get.toNamed(Routes.BOTTOM_NAV_BAR);
       } else {
-        // Handle unexpected response codes
         Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
+            backgroundColor: VoidColors.primary,
+            colorText: VoidColors.whiteColor,
+            snackPosition: SnackPosition.BOTTOM);
+      }
+    } catch (e) {
+      loading.value = false;
+      Get.snackbar('Error', 'An error occurred. Please try again.',
           backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
+
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final response = await http.post(
+        Uri.parse("$baseUrl/google_login"),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'idToken': googleAuth.idToken,
+          'accessToken': googleAuth.accessToken,
+        }),
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (data['responseCode'] == '4000') {
+        responseData.value = data;
+        token.value = data['token'];
+        id.value = data['data']['id'].toString();
+        print("***********************");
+        print(responseData);
+        Get.toNamed(Routes.BOTTOM_NAV_BAR);
+      } else {
+        Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
+            backgroundColor: VoidColors.primary,
+            colorText: VoidColors.whiteColor,
+            snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
-      loading.value = false; // Set loading to false in case of an error
-      // Handle network or other errors
-      Get.snackbar('Error', 'An error occurred. Please try again.',
-      backgroundColor: VoidColors.primary,
+      Get.snackbar('Error', 'An error occurred during Google Sign-In. Please try again.',
+          backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
-    
     }
   }
 
