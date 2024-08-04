@@ -19,7 +19,7 @@ var userid=SignInController().userId;
   void fetchUsers() async {
     print(signInController.userId);
     print("*****************************");
-    final url = 'https://meet-around-apis-production.up.railway.app/api/user/getUsers?${signInController.id}';
+    final url = 'https://meet-around-apis-production.up.railway.app/api/user/getUsers?userId=32';
     var token = signInController.token;
     
 

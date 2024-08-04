@@ -58,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: 3,
+                itemCount: searchController.users.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 20.h),
