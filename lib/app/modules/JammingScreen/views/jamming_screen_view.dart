@@ -85,7 +85,7 @@ class JammingScreenView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Obx(
-                      () => Container(
+                          () => Container(
                         width: 160.w,
                         height: 46.h,
                         decoration: BoxDecoration(
@@ -97,7 +97,7 @@ class JammingScreenView extends StatelessWidget {
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               value: controller.selectedSong.value.isEmpty
-                                  ? musicGeneres[0]
+                                  ? "Select a song"
                                   : controller.selectedSong.value,
                               icon: SvgPicture.asset(
                                 "assets/icons/dropdoen.svg",
@@ -113,20 +113,20 @@ class JammingScreenView extends StatelessWidget {
                               onChanged: (String? newValue) {
                                 controller.setSelectedSong(newValue!);
                               },
-                              items: musicGeneres
+                              items: controller.songs
                                   .map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 14.sp,
-                                      color: VoidColors.whiteColor,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
+                                      (Map<String, dynamic> song) {
+                                    return DropdownMenuItem<String>(
+                                      value: song['url'],
+                                      child: Text(
+                                        song['title'],
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 14.sp,
+                                          color: VoidColors.whiteColor,
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
                             ),
                           ),
                         ),
@@ -144,18 +144,18 @@ class JammingScreenView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20.h),
-             ListView.builder(
+              Obx(
+                    () => ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: songs.length, // or however many items you have
+                  itemCount: controller.songs.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
                         controller.setSelectedSongIndex(index);
+                        controller.playSong(controller.songs[index]['url']);
                       },
-                      child:
-                      Obx((){
-                        return  Container(
+                      child: Container(
                         margin: EdgeInsets.symmetric(vertical: 5.h),
                         decoration: BoxDecoration(
                           color: controller.selectedSongIndex.value == index
@@ -167,8 +167,7 @@ class JammingScreenView extends StatelessWidget {
                           padding: EdgeInsets.symmetric(
                               vertical: 15.h, horizontal: 10.w),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,10 +180,10 @@ class JammingScreenView extends StatelessWidget {
                                   SizedBox(width: 13.w),
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        songs[index],
+                                        controller.songs[index]['title'],
                                         style: GoogleFonts.roboto(
                                           fontSize: 16.sp,
                                           fontWeight: FontWeight.w400,
@@ -193,7 +192,7 @@ class JammingScreenView extends StatelessWidget {
                                       ),
                                       SizedBox(height: 8.h),
                                       Text(
-                                        singer[index],
+                                        controller.songs[index]['artist'],
                                         style: GoogleFonts.roboto(
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w400,
@@ -207,15 +206,12 @@ class JammingScreenView extends StatelessWidget {
                               Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    if (controller
-                                            .selectedSongIndex.value ==
+                                    if (controller.selectedSongIndex.value ==
                                         index) {
                                       controller.togglePlaying();
                                     } else {
                                       controller.setSelectedSongIndex(index);
-                                      if (!controller.isPlaying.value) {
-                                        controller.togglePlaying();
-                                      }
+                                      controller.playSong(controller.songs[index]['url']);
                                     }
                                   },
                                   child: Container(
@@ -227,22 +223,20 @@ class JammingScreenView extends StatelessWidget {
                                     ),
                                     child: Center(
                                       child: controller.isPlaying.value &&
-                                              controller
-                                                      .selectedSongIndex
-                                                      .value ==
-                                                  index
+                                          controller.selectedSongIndex.value ==
+                                              index
                                           ? Icon(
-                                              Icons.pause,
-                                              color: VoidColors.secondary,
-                                            )
+                                        Icons.pause,
+                                        color: VoidColors.secondary,
+                                      )
                                           : SvgPicture.asset(
-                                              "assets/icons/pausee.svg",
-                                              height: 20.h,
-                                              width: 20.w,
-                                              colorFilter: ColorFilter.mode(
-                                                  VoidColors.secondary,
-                                                  BlendMode.srcIn),
-                                            ),
+                                        "assets/icons/pausee.svg",
+                                        height: 20.h,
+                                        width: 20.w,
+                                        colorFilter: ColorFilter.mode(
+                                            VoidColors.secondary,
+                                            BlendMode.srcIn),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -250,12 +244,11 @@ class JammingScreenView extends StatelessWidget {
                             ],
                           ),
                         ),
-                      );
-                   
-                      })
+                      ),
                     );
                   },
                 ),
+              ),
             ],
           ),
         ),
@@ -311,18 +304,18 @@ class JammingScreenView extends StatelessWidget {
                   ),
                   child: Center(
                     child: Obx(
-                      () => controller.isPlaying.value
+                          () => controller.isPlaying.value
                           ? Icon(
-                              Icons.pause,
-                              color: VoidColors.whiteColor,
-                            )
+                        Icons.pause,
+                        color: VoidColors.whiteColor,
+                      )
                           : SvgPicture.asset(
-                              "assets/icons/pausee.svg",
-                              height: 20.h,
-                              width: 20.w,
-                              colorFilter: ColorFilter.mode(
-                                  VoidColors.whiteColor, BlendMode.srcIn),
-                            ),
+                        "assets/icons/pausee.svg",
+                        height: 20.h,
+                        width: 20.w,
+                        colorFilter: ColorFilter.mode(
+                            VoidColors.whiteColor, BlendMode.srcIn),
+                      ),
                     ),
                   ),
                 ),
