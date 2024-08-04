@@ -6,11 +6,10 @@ import 'package:scratch_project/app/modules/signIn/controllers/sign_in_controlle
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 
 class SearchScreenController extends GetxController {
-  
   final SignInController signInController = Get.put(SignInController());
-   var users = [].obs;
+  var users = [].obs;
   var isLoading = false.obs;
-var userid=SignInController().userId;
+  var userid = SignInController().userId;
   @override
   void onInit() {
     super.onInit();
@@ -19,9 +18,9 @@ var userid=SignInController().userId;
   void fetchUsers() async {
     print(signInController.userId);
     print("*****************************");
-    final url = 'https://meet-around-apis-production.up.railway.app/api/user/getUsers?userId=32';
+    final url =
+        'https://meet-around-apis-production.up.railway.app/api/user/getUsers?userId=32';
     var token = signInController.token;
-    
 
     try {
       isLoading(true);
@@ -34,13 +33,14 @@ var userid=SignInController().userId;
 
       if (response.statusCode == 200) {
         List<dynamic> jsonResponse = json.decode(response.body);
-        users.value = jsonResponse.map((user) => user as Map<String, dynamic>).toList();
+        users.value =
+            jsonResponse.map((user) => user as Map<String, dynamic>).toList();
       } else {
         Get.snackbar('Error', 'Failed to fetch users');
       }
     } catch (e) {
       Get.snackbar('Error', 'An error occurred',
-       backgroundColor: VoidColors.primary,
+          backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
     } finally {

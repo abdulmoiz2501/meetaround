@@ -2,8 +2,9 @@ import 'dart:convert'; // For jsonEncode and jsonDecode
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:scratch_project/app/controllers/user_controller.dart';
+import 'package:scratch_project/app/models/user_model.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
-import 'package:scratch_project/app/utils/constants.dart';
 import 'package:scratch_project/app/utils/constraints/api_constants.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 
@@ -59,11 +60,18 @@ class SignInController extends GetxController {
       loading.value = false; // Set loading to false
 
       final data = jsonDecode(response.body);
+      print('This is the response of the login api: $data');
 
       if (data['responseCode'] == '4000') {
         responseData.value = data;
         token.value = data['token']; // Store token here
-         id.value = data['data']['id'].toString();
+        id.value = data['data']['id'].toString();
+        final UserController userController = Get.find();
+        print('///done with the user controller');
+        userController.token.value = token.value;
+        print('///done with the token');
+        userController.user.value = UserModel.fromJson(data['data']);
+        print('///done with the user model');
         print("***********************");
         print(responseData);
         // Navigate to the next screen
@@ -71,18 +79,18 @@ class SignInController extends GetxController {
       } else {
         // Handle unexpected response codes
         Get.snackbar('Error', data['responseDesc'] ?? 'An error occurred',
-          backgroundColor: VoidColors.primary,
-          colorText: VoidColors.whiteColor,
-          snackPosition: SnackPosition.BOTTOM);
+            backgroundColor: VoidColors.primary,
+            colorText: VoidColors.whiteColor,
+            snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {
       loading.value = false; // Set loading to false in case of an error
       // Handle network or other errors
+      print('This is the error: $e');
       Get.snackbar('Error', 'An error occurred. Please try again.',
-      backgroundColor: VoidColors.primary,
+          backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
-    
     }
   }
 
