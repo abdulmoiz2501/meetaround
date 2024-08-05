@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:scratch_project/app/controllers/user_controller.dart';
 import 'package:scratch_project/app/utils/constants.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
+import 'package:scratch_project/app/utils/logging/logger.dart';
+import 'package:scratch_project/app/widgets/custom_button.dart';
 import '../controllers/profile_screen_controller.dart';
 
 class ProfileScreenView extends GetView<ProfileScreenController> {
@@ -88,8 +90,10 @@ class EditProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.initializeValues();
+    VoidLogger.info("Edit Profile  Built again");
     return Padding(
-      padding: EdgeInsets.all(16.h).copyWith(bottom: 48.h),
+      padding: EdgeInsets.all(16.h).copyWith(bottom: 96.h),
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -99,26 +103,33 @@ class EditProfile extends StatelessWidget {
             Center(
               child: Stack(
                 children: [
-                  Obx(() {
-                    return Container(
-                      height: 78.h,
-                      width: 78.w,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: VoidColors.grey4,
-                      ),
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100.r),
-                          child: controller.pickedImage.value != null
-                              ? Image.file(
-                                  controller.pickedImage.value!,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  color: Colors.transparent,
-                                )),
-                    );
-                  }),
+                  Container(
+                    height: 78.h,
+                    width: 78.w,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: VoidColors.grey4,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.r),
+                      child: Obx(() {
+                        if (controller.pickedImage.value != null) {
+                          // Display image from file
+                          return Image.file(controller.pickedImage.value!,
+                              fit: BoxFit.cover);
+                        } else if (controller
+                            .imageFromServer.value.isNotEmpty) {
+                          // Display network image
+                          return Image.network(controller.imageFromServer.value,
+                              fit: BoxFit.cover);
+                        } else {
+                          // Fallback image if no image is available
+                          return Image.asset("assets/images/girl.png",
+                              fit: BoxFit.cover);
+                        }
+                      }),
+                    ),
+                  ),
                   Positioned(
                     bottom: 0,
                     right: 8,
@@ -129,7 +140,7 @@ class EditProfile extends StatelessWidget {
                       child: Container(
                         height: 20.h,
                         width: 20.w,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             shape: BoxShape.circle, color: VoidColors.green),
                         child: Center(
                           child: Icon(
@@ -184,8 +195,8 @@ class EditProfile extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
-                            offset:
-                                Offset(0, 4), // Shadow is applied only downward
+                            offset: const Offset(
+                                0, 4), // Shadow is applied only downward
                             blurRadius:
                                 8.0, // Adjust the blur radius to control the spread of the shadow
                             spreadRadius: 0.0,
@@ -364,8 +375,23 @@ class EditProfile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16.r),
               ),
               child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16.r),
-                  child: Image.asset("assets/images/girl.png")),
+                borderRadius: BorderRadius.circular(16.r),
+                child: Obx(() {
+                  if (controller.pickedImage.value != null) {
+                    // Display image from file
+                    return Image.file(controller.pickedImage.value!,
+                        fit: BoxFit.cover);
+                  } else if (controller.imageFromServer.value.isNotEmpty) {
+                    // Display network image
+                    return Image.network(controller.imageFromServer.value,
+                        fit: BoxFit.cover);
+                  } else {
+                    // Fallback image if no image is available
+                    return Image.asset("assets/images/girl.png",
+                        fit: BoxFit.cover);
+                  }
+                }),
+              ),
             ),
             SizedBox(
               height: 30.h,
@@ -422,6 +448,25 @@ class EditProfile extends StatelessWidget {
                 );
               }),
             ),
+            20.verticalSpace,
+            CustomButton(
+              child: Obx(() {
+                return controller.isLoading.value
+                    ? CircularProgressIndicator()
+                    : Text(
+                        'Save Information',
+                        overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16.sp,
+                          color: VoidColors.whiteColor,
+                        ),
+                      );
+              }),
+              onPressed: () async {
+                await controller.editProfile();
+              },
+            ),
           ],
         ),
       ),
@@ -438,178 +483,180 @@ class ProfilePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(16.h).copyWith(bottom: 48.h),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 10.h),
-            Center(
-              child: Container(
-                height: 90.h,
-                width: 90.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100.r),
-                  child: Image.network(
-                    userController.user.value.profilePicture.isNotEmpty
-                        ? userController.user.value.profilePicture
-                        : noImagePlaceHolder,
-                    fit: BoxFit.cover,
+    return Obx(
+      () => SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.h).copyWith(bottom: 48.h),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 10.h),
+              Center(
+                child: Container(
+                  height: 90.h,
+                  width: 90.w,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100.r),
+                    child: Image.network(
+                      userController.user.value.profilePicture.isNotEmpty
+                          ? userController.user.value.profilePicture
+                          : noImagePlaceHolder,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/icons/coin.png',
-                  height: 20.r,
-                  width: 20.r,
-                ),
-                Text(
-                  userController.user.value.coins != null
-                      ? userController.user.value.coins.toString()
-                      : "0",
-                  style: GoogleFonts.manrope(
-                    fontSize: 14.sp,
-                    fontWeight: FontWeight.w500,
-                    color: VoidColors.blackColor,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10.h,
-            ),
-            Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              SizedBox(
+                height: 10.h,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    'assets/icons/coin.png',
+                    height: 20.r,
+                    width: 20.r,
+                  ),
                   Text(
-                    userController.user.value.name,
+                    userController.user.value.coins != null
+                        ? userController.user.value.coins.toString()
+                        : "0",
                     style: GoogleFonts.manrope(
-                      fontSize: 20.sp,
-                      fontWeight: FontWeight.w400,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                       color: VoidColors.blackColor,
                     ),
                   ),
-                  Text(
-                    "Coins Earned : ${userController.user.value.coins != null ? userController.user.value.coins.toString() : 0}",
-                    style: GoogleFonts.manrope(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: VoidColors.blackColor,
+                ],
+              ),
+              SizedBox(
+                height: 10.h,
+              ),
+              Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      userController.user.value.name,
+                      style: GoogleFonts.manrope(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w400,
+                        color: VoidColors.blackColor,
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 100.w,
-                    child: Text(
-                      userController.user.value.interests.join(', '),
-                      maxLines: 2,
+                    Text(
+                      "Coins Earned : ${userController.user.value.coins != null ? userController.user.value.coins.toString() : 0}",
                       style: GoogleFonts.manrope(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w400,
                         color: VoidColors.blackColor,
                       ),
                     ),
-                  ),
-                  Text(
-                    "Interactions Completed : ${userController.user.value.coins != null ? userController.user.value.coins.toString() : 0}",
-                    style: GoogleFonts.manrope(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: VoidColors.blackColor,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30.h,
-            ),
-            Text(
-              "Photos",
-              style: GoogleFonts.manrope(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: VoidColors.blackColor,
-              ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Center(
-              child: Container(
-                  height: 272.h,
-                  width: 272.w,
-                  child: Image.network(
-                    userController.user.value.profilePicture.isNotEmpty
-                        ? userController.user.value.profilePicture
-                        : noImagePlaceHolder,
-                    fit: BoxFit.cover,
-                  )),
-            ),
-            SizedBox(
-              height: 40.h,
-            ),
-            Text(
-              "Music Genres:",
-              style: GoogleFonts.manrope(
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w600,
-                color: VoidColors.blackColor,
-              ),
-            ),
-            SizedBox(
-              height: 20.h,
-            ),
-            Wrap(
-              spacing: 10.w,
-              runSpacing: 10.h,
-              children: List.generate(musicGeners.length, (index) {
-                return GestureDetector(
-                  onTap: () {},
-                  child: Obx(() {
-                    bool isSelected = userController.user.value.interests
-                        .contains(musicGeners[index]);
-                    return Container(
-                      padding:
-                          EdgeInsets.only(left: 10.w, right: 10.w, top: 5.5.h),
-                      height: 28.h,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50.r),
-                        color: isSelected
-                            ? VoidColors.secondary
-                            : VoidColors.whiteColor,
-                        border: Border.all(
+                    SizedBox(
+                      width: 100.w,
+                      child: Text(
+                        userController.user.value.interests.join(', '),
+                        maxLines: 2,
+                        style: GoogleFonts.manrope(
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w400,
                           color: VoidColors.blackColor,
                         ),
                       ),
-                      child: Text(
-                        musicGeners[index],
-                        style: GoogleFonts.poppins(
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w400,
-                          color: isSelected
-                              ? VoidColors.whiteColor
-                              : VoidColors.blackColor,
-                        ),
+                    ),
+                    Text(
+                      "Interactions Completed : ${userController.user.value.coins != null ? userController.user.value.coins.toString() : 0}",
+                      style: GoogleFonts.manrope(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w400,
+                        color: VoidColors.blackColor,
                       ),
-                    );
-                  }),
-                );
-              }),
-            ),
-          ],
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30.h,
+              ),
+              Text(
+                "Photos",
+                style: GoogleFonts.manrope(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: VoidColors.blackColor,
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Center(
+                child: Container(
+                    height: 272.h,
+                    width: 272.w,
+                    child: Image.network(
+                      userController.user.value.profilePicture.isNotEmpty
+                          ? userController.user.value.profilePicture
+                          : noImagePlaceHolder,
+                      fit: BoxFit.cover,
+                    )),
+              ),
+              SizedBox(
+                height: 40.h,
+              ),
+              Text(
+                "Music Genres:",
+                style: GoogleFonts.manrope(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w600,
+                  color: VoidColors.blackColor,
+                ),
+              ),
+              SizedBox(
+                height: 20.h,
+              ),
+              Wrap(
+                spacing: 10.w,
+                runSpacing: 10.h,
+                children: List.generate(musicGeners.length, (index) {
+                  return GestureDetector(
+                    onTap: () {},
+                    child: Obx(() {
+                      bool isSelected = userController.user.value.interests
+                          .contains(musicGeners[index]);
+                      return Container(
+                        padding: EdgeInsets.only(
+                            left: 10.w, right: 10.w, top: 5.5.h),
+                        height: 28.h,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.r),
+                          color: isSelected
+                              ? VoidColors.secondary
+                              : VoidColors.whiteColor,
+                          border: Border.all(
+                            color: VoidColors.blackColor,
+                          ),
+                        ),
+                        child: Text(
+                          musicGeners[index],
+                          style: GoogleFonts.poppins(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w400,
+                            color: isSelected
+                                ? VoidColors.whiteColor
+                                : VoidColors.blackColor,
+                          ),
+                        ),
+                      );
+                    }),
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
       ),
     );

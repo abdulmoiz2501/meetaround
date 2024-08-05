@@ -3,7 +3,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 
-//final baseUrl = "https://jsapi.maxbitz.com/api";
+final baseUrl = "https://meet-around-apis-production.up.railway.app";
 final noImagePlaceHolder =
     "https://plus.unsplash.com/premium_photo-1666899940579-6c931e34d52c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8bm8lMjBpbWFnZXxlbnwwfHwwfHx8MA%3D%3D";
 

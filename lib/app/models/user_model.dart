@@ -10,7 +10,7 @@ class UserModel {
   final String profilePicture;
   final double latitude;
   final double longitude;
-  final String? status;
+  final bool? status;
   final int? coins;
   final bool? verified;
 
