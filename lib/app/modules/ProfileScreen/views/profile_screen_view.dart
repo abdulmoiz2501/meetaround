@@ -66,9 +66,7 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
         ),
         body: TabBarView(
           children: [
-            ProfilePreview(
-              controller: controller,
-            ),
+            ProfilePreview(),
             EditProfile(
               controller: controller,
             ),
@@ -80,12 +78,13 @@ class ProfileScreenView extends GetView<ProfileScreenController> {
 }
 
 class EditProfile extends StatelessWidget {
-  const EditProfile({
+  EditProfile({
     super.key,
     required this.controller,
   });
 
   final ProfileScreenController controller;
+  final UserController userController = Get.find();
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +103,7 @@ class EditProfile extends StatelessWidget {
                     return Container(
                       height: 78.h,
                       width: 78.w,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: VoidColors.grey4,
                       ),
@@ -218,8 +217,8 @@ class EditProfile extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.1),
-                            offset:
-                                Offset(0, 4), // Shadow is applied only downward
+                            offset: const Offset(
+                                0, 4), // Shadow is applied only downward
                             blurRadius:
                                 8.0, // Adjust the blur radius to control the spread of the shadow
                             spreadRadius: 0.0,
@@ -269,7 +268,7 @@ class EditProfile extends StatelessWidget {
               height: 210,
               child: ListView.builder(
                 itemCount: 3,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   return Obx(() {
                     bool isSelected = controller.selectedGender.value == index;
@@ -393,8 +392,8 @@ class EditProfile extends StatelessWidget {
                     controller.toggleMusicGenre(index);
                   },
                   child: Obx(() {
-                    bool isSelected =
-                        controller.selectedMusicGenres.contains(index);
+                    bool isSelected = controller.selectedMusicGenres
+                        .contains(musicGeneres[index]);
                     return Container(
                       padding:
                           EdgeInsets.only(left: 10.w, right: 10.w, top: 5.5.h),
@@ -433,10 +432,8 @@ class EditProfile extends StatelessWidget {
 class ProfilePreview extends StatelessWidget {
   ProfilePreview({
     super.key,
-    required this.controller,
   });
 
-  final ProfileScreenController controller;
   final UserController userController = Get.find();
 
   @override
@@ -552,10 +549,14 @@ class ProfilePreview extends StatelessWidget {
             ),
             Center(
               child: Container(
-                height: 272.h,
-                width: 272.w,
-                child: Image.asset("assets/images/photo.png"),
-              ),
+                  height: 272.h,
+                  width: 272.w,
+                  child: Image.network(
+                    userController.user.value.profilePicture.isNotEmpty
+                        ? userController.user.value.profilePicture
+                        : noImagePlaceHolder,
+                    fit: BoxFit.cover,
+                  )),
             ),
             SizedBox(
               height: 40.h,
@@ -578,8 +579,8 @@ class ProfilePreview extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {},
                   child: Obx(() {
-                    bool isSelected =
-                        controller.selectedMusicGenres.contains(index);
+                    bool isSelected = userController.user.value.interests
+                        .contains(musicGeners[index]);
                     return Container(
                       padding:
                           EdgeInsets.only(left: 10.w, right: 10.w, top: 5.5.h),
