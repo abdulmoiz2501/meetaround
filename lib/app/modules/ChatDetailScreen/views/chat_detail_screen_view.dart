@@ -35,12 +35,7 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
     final int coins = arguments['coins'];
     final String coinIcon = arguments['coinIcon'];
 
-    final List<ChatMessage> messages = [
-      ChatMessage(text: "Hello!", isSent: false),
-      ChatMessage(text: "Hi, how are you?", isSent: true),
-      ChatMessage(text: "I'm good, thanks! And you?", isSent: false),
-      ChatMessage(text: "Doing well, thanks for asking.", isSent: true),
-    ];
+
 
     return Scaffold(
        backgroundColor:VoidColors.secondary ,
@@ -114,143 +109,145 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.all(10.w),
-                itemCount: messages.length,
-                reverse: true, // Start from bottom
-                itemBuilder: (context, index) {
-                  final message = messages[index];
-                  return index==0 || index==3  ?Column(
-                    children: [
-                       Center(
-                child: Text(index==3?"Wed 22 June":"Today",style: GoogleFonts.lato(
-                  fontSize:14.sp,
-                  fontWeight: FontWeight.w500,
-                  color:VoidColors.whiteColor
-                ),),
-              ),
-                      Align(
-                        alignment: message.isSent
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child:message.isSent? Container(
-                          //height: 68.h,
-                          width: 266.w,
-                          margin: EdgeInsets.symmetric(vertical: 5.h),
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                          decoration: BoxDecoration(
-                            
-                            color: message.isSent
-                                ? VoidColors.lightPink
-                                : VoidColors.whiteColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(24.r),
-                              topRight: Radius.circular(24.r),
-                              bottomLeft: Radius.circular(24.r),
-                             // bottomRight: 
-                            )
-                          ),
-                          child: Text(
-                            message.text,
-                            style: GoogleFonts.poppins(
-                              fontSize: 14.sp,
-                              color: Colors.black,
+              child: Obx(()=>
+                 ListView.builder(
+                  padding: EdgeInsets.all(10.w),
+                  itemCount: controller.messages.length,
+                  reverse: true, // Start from bottom
+                  itemBuilder: (context, index) {
+                    final message = controller.messages[index];
+                    return index==0 || index==3  ?Column(
+                      children: [
+                         Center(
+                  child: Text(index==3?"Wed 22 June":"Today",style: GoogleFonts.lato(
+                    fontSize:14.sp,
+                    fontWeight: FontWeight.w500,
+                    color:VoidColors.whiteColor
+                  ),),
+                ),
+                        Align(
+                          alignment: message.isSent
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child:message.isSent? Container(
+                            //height: 68.h,
+                            width: 266.w,
+                            margin: EdgeInsets.symmetric(vertical: 5.h),
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                            decoration: BoxDecoration(
+                              
+                              color: message.isSent
+                                  ? VoidColors.lightPink
+                                  : VoidColors.whiteColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(24.r),
+                                topRight: Radius.circular(24.r),
+                                bottomLeft: Radius.circular(24.r),
+                               // bottomRight: 
+                              )
                             ),
-                          ),
-                        ):Row(
-                          children: [
-                            Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
-                            SizedBox(width:10.w),
-                            Container(
-                              //height: 68.h,
-                              width: 266.w,
-                              margin: EdgeInsets.symmetric(vertical: 5.h),
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                              decoration: BoxDecoration(
-                                
-                                color: message.isSent
-                                    ? VoidColors.lightPink
-                                    : VoidColors.whiteColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24.r),
-                                  topRight: Radius.circular(24.r),
-                                  bottomLeft: Radius.circular(24.r),
-                                 // bottomRight: 
-                                )
+                            child: Text(
+                              message.text,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14.sp,
+                                color: Colors.black,
                               ),
-                              child: Text(
-                                message.text,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14.sp,
-                                  color: Colors.black,
+                            ),
+                          ):Row(
+                            children: [
+                              Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
+                              SizedBox(width:10.w),
+                              Container(
+                                //height: 68.h,
+                                width: 266.w,
+                                margin: EdgeInsets.symmetric(vertical: 5.h),
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                                decoration: BoxDecoration(
+                                  
+                                  color: message.isSent
+                                      ? VoidColors.lightPink
+                                      : VoidColors.whiteColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(24.r),
+                                    topRight: Radius.circular(24.r),
+                                    bottomLeft: Radius.circular(24.r),
+                                   // bottomRight: 
+                                  )
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14.sp,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ):Align(
-                        alignment: message.isSent
-                            ? Alignment.centerRight
-                            : Alignment.centerLeft,
-                        child:message.isSent? Container(
-                          //height: 68.h,
-                          width: 266.w,
-                          margin: EdgeInsets.symmetric(vertical: 5.h),
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                          decoration: BoxDecoration(
-                            
-                            color: message.isSent
-                                ? VoidColors.lightPink
-                                : VoidColors.whiteColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(24.r),
-                              topRight: Radius.circular(24.r),
-                              bottomLeft: Radius.circular(24.r),
-                             // bottomRight: 
-                            )
-                          ),
-                          child: Text(
-                            message.text,
-                            style: GoogleFonts.poppins(
-                              fontSize: 14.sp,
-                              color: Colors.black,
+                      ],
+                    ):Align(
+                          alignment: message.isSent
+                              ? Alignment.centerRight
+                              : Alignment.centerLeft,
+                          child:message.isSent? Container(
+                            //height: 68.h,
+                            width: 266.w,
+                            margin: EdgeInsets.symmetric(vertical: 5.h),
+                            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                            decoration: BoxDecoration(
+                              
+                              color: message.isSent
+                                  ? VoidColors.lightPink
+                                  : VoidColors.whiteColor,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(24.r),
+                                topRight: Radius.circular(24.r),
+                                bottomLeft: Radius.circular(24.r),
+                               // bottomRight: 
+                              )
                             ),
-                          ),
-                        ):Row(
-                          children: [
-                            Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
-                            SizedBox(width:10.w),
-                            Container(
-                              //height: 68.h,
-                              width: 266.w,
-                              margin: EdgeInsets.symmetric(vertical: 5.h),
-                              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                              decoration: BoxDecoration(
-                                
-                                color: message.isSent
-                                    ? VoidColors.lightPink
-                                    : VoidColors.whiteColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(24.r),
-                                  topRight: Radius.circular(24.r),
-                                  bottomLeft: Radius.circular(24.r),
-                                 // bottomRight: 
-                                )
+                            child: Text(
+                              message.text,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14.sp,
+                                color: Colors.black,
                               ),
-                              child: Text(
-                                message.text,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14.sp,
-                                  color: Colors.black,
+                            ),
+                          ):Row(
+                            children: [
+                              Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
+                              SizedBox(width:10.w),
+                              Container(
+                                //height: 68.h,
+                                width: 266.w,
+                                margin: EdgeInsets.symmetric(vertical: 5.h),
+                                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                                decoration: BoxDecoration(
+                                  
+                                  color: message.isSent
+                                      ? VoidColors.lightPink
+                                      : VoidColors.whiteColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(24.r),
+                                    topRight: Radius.circular(24.r),
+                                    bottomLeft: Radius.circular(24.r),
+                                   // bottomRight: 
+                                  )
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14.sp,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                },
+                            ],
+                          ),
+                        );
+                  },
+                ),
               ),
             ),
             Padding(
@@ -318,10 +315,12 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
                     child: Center(
                       child:GestureDetector(
                         onTap: (){
-                           Get.toNamed(
-          Routes.JAMMING_SCREEN,
+                          print(":::: Sedning message");
+                          controller.sendMessage("");
+                          //  Get.toNamed(
+          // Routes.JAMMING_SCREEN,
           
-        );
+        // );
                         },
                         child: SvgPicture.asset(
                           "assets/icons/voice.svg",

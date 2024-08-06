@@ -324,14 +324,13 @@ class SignUpController extends GetxController {
     longitude.value = position.longitude;
   }
 
-  ///Web socket part
   void connectWebSocket() {
     final channel = WebSocketChannel.connect(
       Uri.parse('wss://meet-around-apis-production.up.railway.app/ws'),
     );
 
     channel.sink.add(jsonEncode({
-      "userId": signInController,
+      "userId": signInController.userId,
       "latitude": latitude.value.toString(),
       "longitude": longitude.value.toString()
     }));
@@ -353,4 +352,5 @@ class SignUpController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     });
   }
+
 }
