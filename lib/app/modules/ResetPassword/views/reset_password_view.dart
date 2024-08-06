@@ -1,75 +1,91 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/signIn/controllers/sign_in_controller.dart';
 import 'package:scratch_project/app/modules/signUp/views/signup_form_screen_view.dart';
-import 'package:scratch_project/app/routes/app_pages.dart';
-import '../../../utils/constraints/colors.dart';
-import '../../../utils/constraints/image_strings.dart';
-import '../../../utils/constraints/text_strings.dart';
-import '../../../widgets/custom_button.dart';
-import '../../../widgets/custom_textform_field.dart';
-import '../controllers/sign_in_controller.dart';
+import 'package:scratch_project/app/utils/constraints/colors.dart';
+import 'package:scratch_project/app/utils/constraints/image_strings.dart';
+import 'package:scratch_project/app/utils/constraints/text_strings.dart';
+import 'package:scratch_project/app/widgets/custom_button.dart';
+import 'package:scratch_project/app/widgets/custom_textform_field.dart';
 
-class SignInView extends GetView<SignInController> {
-  const SignInView({super.key});
+import '../controllers/reset_password_controller.dart';
+
+class ResetPasswordView extends GetView<ResetPasswordController> {
+  const ResetPasswordView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final SignInController _controller = Get.find<SignInController>();
-
+      final ResetPasswordController resetPasswordController =Get.put(ResetPasswordController());
+       final SignInController _controller = Get.find<SignInController>();
     return Scaffold(
-      backgroundColor: VoidColors.whiteColor,
-      body: SingleChildScrollView(
-        child: Column(
+      appBar: AppBar(
+title:  Text('Reset Your Password',style: GoogleFonts.poppins(
+  fontSize: 16.sp,
+  fontWeight:FontWeight.w500,
+  color: VoidColors.blackColor,
+)),
+        centerTitle: true,
+      ),
+      body:SingleChildScrollView(
+        child:Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(height: 60.0.h),
-            Image.asset(VoidImages.secSplash, height: 100.h, width: 100.w),
-            Padding(
-              padding: EdgeInsets.only(top: 20.0.h, bottom: 25.0.h),
-              child: Text(
-                VoidTexts.signUpTitle,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 24.spMax,
-                  color: VoidColors.blackColor,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            SizedBox(height: 40.0.h),
-            CustomTextFormField(
-              controller: _controller.emailController,
-              obscureText: false,
-              hint: 'Email',
-              prefix: Icon(Icons.email_outlined,
-                size: 24.sp, color: VoidColors.darkGrey),
-            ),
-            CustomTextFormField(
-              controller: _controller.passwordController,
-              obscureText: true,
-              hint: 'Password',
-              prefix: Icon(Icons.lock_outline,
-                size: 24.sp, color: VoidColors.darkGrey),
-            ),
-            Padding(
-              padding:  EdgeInsets.only(right: 20.w,top: 5.h),
-              child: GestureDetector(
-                onTap: (){
-                   Get.toNamed(Routes.RESET_PASSWORD);
-                },
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Text("Forget Password",style: GoogleFonts.poppins(
-                  fontWeight:FontWeight.w400,
-                  fontSize: 12.sp,
-                  color: VoidColors.redColor,
-                  ),),
-                ),
-              ),
-            ),
-            SizedBox(height: 20.0.h),
+            SizedBox(height: 30.h,),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 24.w),
+            child: Text('Current Password',style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight:FontWeight.w500,
+              color: VoidColors.lightGrey3,
+            )),
+          ),
+SizedBox(height: 10.h,),
+CustomTextFormField(
+  controller: resetPasswordController.currentPasssword,
+  obscureText: true,
+  suffix: SvgPicture.asset("assets/icons/eye.svg",
+  height: 24.h,
+  width: 24.w,
+  colorFilter: ColorFilter.mode(VoidColors.lightGrey4, BlendMode.srcIn),)
+),
+SizedBox(height: 10.h,),
+
+Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 24.w),
+            child: Text('Password',style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight:FontWeight.w500,
+              color: VoidColors.lightGrey3,
+            )),
+          ),
+SizedBox(height: 10.h,),
+CustomTextFormField(
+  obscureText: false,
+  controller: resetPasswordController.password,
+  
+),
+SizedBox(height: 10.h,),
+
+Padding(
+            padding:  EdgeInsets.symmetric(horizontal: 24.w),
+            child: Text('Confirm New Password',style: GoogleFonts.poppins(
+              fontSize: 14.sp,
+              fontWeight:FontWeight.w500,
+              color: VoidColors.lightGrey3,
+            )),
+          ),
+SizedBox(height: 10.h,),
+CustomTextFormField(
+  controller: resetPasswordController.cPassword,
+  obscureText: false,
+  
+),
+
+ SizedBox(height: 100.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 20.0.w),
               child: Obx(() {
@@ -171,9 +187,9 @@ class SignInView extends GetView<SignInController> {
             ),
           ],
         ).marginOnly(bottom: 30.0.h),
-      ),
-   
-    );
+        
+        )
+      );
   
   }
 }

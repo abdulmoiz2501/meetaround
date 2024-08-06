@@ -496,7 +496,7 @@ class ProfilePreview extends StatelessWidget {
                 child: Container(
                   height: 90.h,
                   width: 90.w,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                   ),
                   child: ClipRRect(

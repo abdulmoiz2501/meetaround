@@ -11,6 +11,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../utils/constraints/colors.dart';
 
 class SignUpController extends GetxController {
+  var isLoading = false.obs;
   var accept = false.obs;
   var loading = false.obs;
   Rx<XFile?> imgFile = Rx<XFile?>(null);
@@ -121,8 +122,7 @@ class SignUpController extends GetxController {
     });
 
     try {
-      final response =
-          await http.post(Uri.parse(apiUrl), headers: headers, body: body);
+      final response = await http.post(Uri.parse(apiUrl), headers: headers, body: body);
       final responseData = json.decode(response.body);
 
       if (responseData['responseCode'] == '4001') {
@@ -250,7 +250,6 @@ class SignUpController extends GetxController {
           'profile_picture', imgFile.value!.path);
       request.files.add(file);
     }
-
     try {
       loading(true);
       print('Sending request to $apiUrl with fields: ${request.fields}');
@@ -288,6 +287,7 @@ class SignUpController extends GetxController {
   }
 
   Future<void> getCurrentLocation() async {
+    isLoading.value = true;
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -295,6 +295,7 @@ class SignUpController extends GetxController {
     if (!serviceEnabled) {
       Get.snackbar('Error', 'Location services are disabled.',
           backgroundColor: VoidColors.primary, colorText: VoidColors.secondary);
+      isLoading.value = false;
       return;
     }
 
@@ -303,8 +304,8 @@ class SignUpController extends GetxController {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         Get.snackbar('Error', 'Location permissions are denied.',
-            backgroundColor: VoidColors.primary,
-            colorText: VoidColors.secondary);
+            backgroundColor: VoidColors.primary, colorText: VoidColors.secondary);
+        isLoading.value = false;
         return;
       }
     }
@@ -315,6 +316,7 @@ class SignUpController extends GetxController {
           backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
+      isLoading.value = false;
       return;
     }
 
@@ -322,16 +324,16 @@ class SignUpController extends GetxController {
         desiredAccuracy: LocationAccuracy.high);
     latitude.value = position.latitude;
     longitude.value = position.longitude;
+    isLoading.value = false;
   }
 
-  ///Web socket part
   void connectWebSocket() {
     final channel = WebSocketChannel.connect(
       Uri.parse('wss://meet-around-apis-production.up.railway.app/ws'),
     );
 
     channel.sink.add(jsonEncode({
-      "userId": signInController,
+      "userId": signInController.id.value,
       "latitude": latitude.value.toString(),
       "longitude": longitude.value.toString()
     }));

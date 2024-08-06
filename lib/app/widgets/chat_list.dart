@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
-
+final searchScreenController= Get.put(SearchScreenController());
 class ChatListItem extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -26,6 +27,7 @@ class ChatListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        searchScreenController.isChat(false);
         Get.toNamed(
           Routes.CHAT_DETAIL_SCREEN,
           arguments: {
