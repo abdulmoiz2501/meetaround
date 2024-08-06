@@ -6,12 +6,14 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scratch_project/app/modules/ChatDetailScreen/controllers/chat_detail_screen_controller.dart';
+import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 
 class ChatMessage {
   final String text;
   final bool isSent;
+
 
   ChatMessage({required this.text, required this.isSent});
 }
@@ -27,6 +29,7 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
       // You can also upload the selected image or display it in the chat
     }
   }
+  final searchScreenController = Get.put(SearchScreenController());
   @override
   Widget build(BuildContext context) {
     final arguments = Get.arguments as Map<String, dynamic>;
@@ -159,7 +162,16 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
                           ),
                         ):Row(
                           children: [
-                            Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
+                         Container(
+                          height: 40.h,width: 40.w,
+                            decoration:BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100.r),
+                              child:  searchScreenController.isChat.value?Image.network(imgPath, fit: BoxFit.cover): 
+                            Image.asset(imgPath,),
+                            )),
                             SizedBox(width:10.w),
                             Container(
                               //height: 68.h,
@@ -220,7 +232,16 @@ class ChatDetailScreenView extends GetView<ChatDetailScreenController> {
                           ),
                         ):Row(
                           children: [
-                            Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
+                             Container(
+                          height: 40.h,width: 40.w,
+                            decoration:BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100.r),
+                              child:  searchScreenController.isChat.value?Image.network(imgPath, fit: BoxFit.cover): 
+                            Image.asset(imgPath,),
+                            )),
                             SizedBox(width:10.w),
                             Container(
                               //height: 68.h,
