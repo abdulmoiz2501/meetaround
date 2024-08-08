@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scratch_project/app/controllers/user_controller.dart';
+import 'package:scratch_project/app/models/chat_model.dart';
 import 'package:scratch_project/app/modules/ChatDetailScreen/views/chat_detail_screen_view.dart';
 import 'package:scratch_project/app/modules/JammingScreen/views/jamming_screen_view.dart';
 import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
@@ -19,11 +20,12 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final SearchScreenController searchScreenController = Get.put(SearchScreenController());
- final UserController userController= Get.find();
+  final SearchScreenController searchScreenController =
+      Get.put(SearchScreenController());
+  final UserController userController = Get.find();
   @override
   void initState() {
-  searchScreenController.fetchUsers();
+    searchScreenController.fetchUsers();
     super.initState();
   }
 
@@ -72,7 +74,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 // Users
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
                   child: SizedBox(
                     height: 110.h,
                     child: Obx(() {
@@ -81,8 +84,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: VoidColors.whiteColor,
                           height: 500.h,
                           width: double.infinity,
-                          child: Center(child: CircularProgressIndicator(
-                             color: VoidColors.secondary,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: VoidColors.secondary,
                           )),
                         );
                       }
@@ -91,7 +95,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         itemCount: searchScreenController.users.length,
                         itemBuilder: (context, index) {
                           final user = searchScreenController.users[index];
-                          
+
                           return Padding(
                             padding: EdgeInsets.all(8.h),
                             child: Column(
@@ -101,10 +105,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                     Container(
                                       height: 60.63.h,
                                       width: 60.63.w,
-                                      decoration: BoxDecoration(shape: BoxShape.circle),
+                                      decoration:
+                                          BoxDecoration(shape: BoxShape.circle),
                                       child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(100.r),
-                                        child: Image.network(user.profilePicture, fit: BoxFit.cover),
+                                        borderRadius:
+                                            BorderRadius.circular(100.r),
+                                        child: Image.network(
+                                            user.profilePicture,
+                                            fit: BoxFit.cover),
                                       ),
                                     ),
                                     Positioned(
@@ -116,7 +124,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                           width: 14.w,
                                           decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: userController.status.value==null || userController.status.value == false? VoidColors.grey2 : VoidColors.green,
+                                            color:
+                                                userController.status.value ==
+                                                            null ||
+                                                        userController
+                                                                .status.value ==
+                                                            false
+                                                    ? VoidColors.grey2
+                                                    : VoidColors.green,
                                           ),
                                         );
                                       }),
@@ -132,7 +147,6 @@ class _SearchScreenState extends State<SearchScreen> {
                                     color: VoidColors.blackColor,
                                   ),
                                 ),
-                               
                               ],
                             ),
                           );
@@ -146,7 +160,8 @@ class _SearchScreenState extends State<SearchScreen> {
                   width: double.infinity,
                   child: Obx(() {
                     if (searchScreenController.isLoading.value) {
-                      return Center(child: CircularProgressIndicator(
+                      return Center(
+                          child: CircularProgressIndicator(
                         color: VoidColors.secondary,
                       ));
                     }
@@ -156,8 +171,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         final user = searchScreenController.users[index];
-                        final distance = searchScreenController.distances[user.id]?.toInt().toString() ?? 'N/A';
-                                    final address = searchScreenController.addresses[user.id] ?? 'Unknown Location';
+                        final distance = searchScreenController
+                                .distances[user.id]
+                                ?.toInt()
+                                .toString() ??
+                            'N/A';
+                        final address =
+                            searchScreenController.addresses[user.id] ??
+                                'Unknown Location';
                         return Container(
                           height: 800.h,
                           child: Stack(
@@ -165,7 +186,8 @@ class _SearchScreenState extends State<SearchScreen> {
                               Container(
                                 height: 644.h,
                                 width: double.infinity,
-                                child: Image.network(user.profilePicture, fit: BoxFit.cover),
+                                child: Image.network(user.profilePicture,
+                                    fit: BoxFit.cover),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(15.h),
@@ -175,198 +197,282 @@ class _SearchScreenState extends State<SearchScreen> {
                                   decoration: BoxDecoration(
                                     color: Colors.transparent,
                                     border: Border(
-                                      top: BorderSide(color: VoidColors.whiteColor, width: 1.w),
-                                      left: BorderSide(color: VoidColors.whiteColor, width: 1.w),
-                                      right: BorderSide(color: VoidColors.whiteColor, width: 1.w),
+                                      top: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
+                                      left: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
+                                      right: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
                                     ),
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   child: Padding(
                                     padding: EdgeInsets.all(10.h),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Obx((){
-                                           if (searchScreenController.isDistanceLoading.value) {
-                                                          return Align(
-                                                             alignment: Alignment.topRight,
-                                                            child: Center(
-                                                              child: CircularProgressIndicator(
-                                                                color: VoidColors.whiteColor.withOpacity(0.4),
-                                                                strokeWidth: 2,
-                                                              ),
-                                                            ),
-                                                          );
-                                                        }
-                                              return Align(
-                                          alignment: Alignment.topRight,
-                                          child: IntrinsicWidth(
-                                            child: Container(
-                                            //  width: 94.w,
-                                              height: 40.h,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(32.r),
-                                                color: VoidColors.blackColor.withOpacity(0.2),
-                                                border: Border.all(
-                                                  color: VoidColors.whiteColor.withOpacity(0.4),
-                                                  width: 1.w,
+                                        Obx(() {
+                                          if (searchScreenController
+                                              .isDistanceLoading.value) {
+                                            return Align(
+                                              alignment: Alignment.topRight,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: VoidColors.whiteColor
+                                                      .withOpacity(0.4),
+                                                  strokeWidth: 2,
                                                 ),
                                               ),
-                                              child: Padding(
-                                                padding:  EdgeInsets.symmetric(horizontal: 5.w),
-                                                child: Center(
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      SizedBox(
-                                                        height: 16.h,
-                                                        width: 16.w,
-                                                        child: Center(
-                                                          child: SvgPicture.asset("assets/icons/distance.svg"),
+                                            );
+                                          }
+                                          return Align(
+                                            alignment: Alignment.topRight,
+                                            child: IntrinsicWidth(
+                                              child: Container(
+                                                //  width: 94.w,
+                                                height: 40.h,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          32.r),
+                                                  color: VoidColors.blackColor
+                                                      .withOpacity(0.2),
+                                                  border: Border.all(
+                                                    color: VoidColors.whiteColor
+                                                        .withOpacity(0.4),
+                                                    width: 1.w,
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 5.w),
+                                                  child: Center(
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 16.h,
+                                                          width: 16.w,
+                                                          child: Center(
+                                                            child: SvgPicture.asset(
+                                                                "assets/icons/distance.svg"),
+                                                          ),
                                                         ),
-                                                      ),
-                                                      SizedBox(width: 3..w,),
-                                                      Text(
+                                                        SizedBox(
+                                                          width: 3..w,
+                                                        ),
+                                                        Text(
                                                           '$distance km',
-                                                          style: GoogleFonts.poppins(
+                                                          style: GoogleFonts
+                                                              .poppins(
                                                             fontSize: 16.sp,
-                                                            fontWeight: FontWeight.w500,
-                                                            color: VoidColors.whiteColor,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: VoidColors
+                                                                .whiteColor,
                                                           ),
                                                         )
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                             
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        );
+                                          );
                                         }),
                                         Column(
                                           children: [
                                             Stack(
                                               children: [
-                                                
                                                 Align(
-                                                  alignment: Alignment.bottomCenter,
+                                                  alignment:
+                                                      Alignment.bottomCenter,
                                                   child: IntrinsicWidth(
                                                     child: Container(
                                                       decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(12.r),
-                                                        color: VoidColors.whiteColor.withOpacity(0.2),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12.r),
+                                                        color: VoidColors
+                                                            .whiteColor
+                                                            .withOpacity(0.2),
                                                       ),
                                                       child: Stack(
-                                                          children: [
-                                                            Padding(
-                                                              padding: EdgeInsets.all(8.h),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        user.name,
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontWeight: FontWeight.w700,
-                                                                          fontSize: 21.sp,
-                                                                          color: VoidColors.whiteColor,
-                                                                        ),
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.h),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      user.name,
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w700,
+                                                                        fontSize:
+                                                                            21.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
                                                                       ),
-                                                                      SizedBox(width: 5.w),
-                                                                      Text(
-                                                                        user.id.toString(),
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontWeight: FontWeight.w400,
-                                                                          fontSize: 21.sp,
-                                                                          color: VoidColors.whiteColor,
-                                                                        ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    Text(
+                                                                      user.id
+                                                                          .toString(),
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        fontSize:
+                                                                            21.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
                                                                       ),
-                                                                      SizedBox(width: 5.w),
-                                                                      SvgPicture.asset(
-                                                                        "assets/icons/var.svg",
-                                                                        height: 16.h,
-                                                                        width: 16.w,
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    SvgPicture
+                                                                        .asset(
+                                                                      "assets/icons/var.svg",
+                                                                      height:
+                                                                          16.h,
+                                                                      width:
+                                                                          16.w,
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    Text(
+                                                                      userController.verified.value == null ||
+                                                                              userController.verified.value == false
+                                                                          ? "Not Verified"
+                                                                          : "Id Verified",
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        fontSize:
+                                                                            10.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
                                                                       ),
-                                                                      SizedBox(width: 5.w),
-                                                                      Text(
-                                                                         userController.verified.value==null || userController.verified.value == false?
-                                                                        "Not Verified":"Id Verified",
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontWeight: FontWeight.w400,
-                                                                          fontSize: 10.sp,
-                                                                          color: VoidColors.whiteColor,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Obx((){
-                                                                         if (searchScreenController.isAddressLoading.value) {
-                                                          return Center(
-                                                            child: CircularProgressIndicator(
-                                                              color: VoidColors.secondary,
-                                                              strokeWidth: 2,
-                                                            ),
-                                                          );
-                                                        }
-                                                                        return Text(
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Obx(() {
+                                                                      if (searchScreenController
+                                                                          .isAddressLoading
+                                                                          .value) {
+                                                                        return Center(
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            color:
+                                                                                VoidColors.secondary,
+                                                                            strokeWidth:
+                                                                                2,
+                                                                          ),
+                                                                        );
+                                                                      }
+                                                                      return Text(
                                                                         address,
-                                                                        style: GoogleFonts.poppins(
-                                                                          fontWeight: FontWeight.w400,
-                                                                          fontSize: 12.sp,
-                                                                          color: VoidColors.whiteColor,
+                                                                        style: GoogleFonts
+                                                                            .poppins(
+                                                                          fontWeight:
+                                                                              FontWeight.w400,
+                                                                          fontSize:
+                                                                              12.sp,
+                                                                          color:
+                                                                              VoidColors.whiteColor,
                                                                         ),
                                                                       );
-                                                                      }),
-                                                                      SizedBox(width: 15.w),
-                                                                      Row(
-                                                                        children: [
-                                                                          SvgPicture.asset(
-                                                                            "assets/icons/coin1.svg",
-                                                                            height: 16.h,
-                                                                            width: 16.w,
+                                                                    }),
+                                                                    SizedBox(
+                                                                        width: 15
+                                                                            .w),
+                                                                    Row(
+                                                                      children: [
+                                                                        SvgPicture
+                                                                            .asset(
+                                                                          "assets/icons/coin1.svg",
+                                                                          height:
+                                                                              16.h,
+                                                                          width:
+                                                                              16.w,
+                                                                        ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5.w),
+                                                                        Text(
+                                                                          userController.coins.value == null || userController.verified.value == 0
+                                                                              ? '0'
+                                                                              : userController.coins.value.toString(), // user.coins,
+                                                                          style:
+                                                                              GoogleFonts.poppins(
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            fontSize:
+                                                                                14.sp,
+                                                                            color:
+                                                                                VoidColors.whiteColor,
                                                                           ),
-                                                                          SizedBox(width: 5.w),
-                                                                          Text(
-                                                                            userController.coins.value==null || userController.verified.value == 0?
-                                                                            '0':userController.coins.value.toString(), // user.coins,
-                                                                            style: GoogleFonts.poppins(
-                                                                              fontWeight: FontWeight.w700,
-                                                                              fontSize: 14.sp,
-                                                                              color: VoidColors.whiteColor,
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
                                                             ),
-                                                         
-                                                         Positioned(
-                                                  right: 1,
-                                                
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(left: 0),
-                                                    child: Obx(() {
-                                                      return Container(
-                                                        height: 14.h,
-                                                        width: 14.w,
-                                                        decoration: BoxDecoration(
-                                                          shape: BoxShape.circle,
-                                                          color:  userController.status.value==null || userController.status.value == false? VoidColors.grey2 : VoidColors.green,
-                                                        ),
-                                                      );
-                                                    }),
-                                                  ),
-                                                ),
-                                                          ],
-                                                        ),
-                                                   
+                                                          ),
+                                                          Positioned(
+                                                            right: 1,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 0),
+                                                              child: Obx(() {
+                                                                return Container(
+                                                                  height: 14.h,
+                                                                  width: 14.w,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: userController.status.value ==
+                                                                                null ||
+                                                                            userController.status.value ==
+                                                                                false
+                                                                        ? VoidColors
+                                                                            .grey2
+                                                                        : VoidColors
+                                                                            .green,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -374,16 +480,21 @@ class _SearchScreenState extends State<SearchScreen> {
                                             ),
                                             SizedBox(height: 30.h),
                                             Container(
-                                              width: ScreenUtil().screenWidth - 50.w,
+                                              width: ScreenUtil().screenWidth -
+                                                  50.w,
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(40.r),
-                                                  topRight: Radius.circular(40.r),
+                                                  topLeft:
+                                                      Radius.circular(40.r),
+                                                  topRight:
+                                                      Radius.circular(40.r),
                                                 ),
-                                                color: VoidColors.bottomNavColor,
+                                                color:
+                                                    VoidColors.bottomNavColor,
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color: Colors.black.withOpacity(0.2),
+                                                    color: Colors.black
+                                                        .withOpacity(0.2),
                                                     offset: Offset(0, 5),
                                                     blurRadius: 10.r,
                                                     spreadRadius: 2.r,
@@ -391,15 +502,20 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 ],
                                               ),
                                               child: Padding(
-                                                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 15.w,
+                                                    vertical: 20.h),
                                                 child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       "Music genre:",
-                                                      style: GoogleFonts.manrope(
+                                                      style:
+                                                          GoogleFonts.manrope(
                                                         fontSize: 16.sp,
-                                                        fontWeight: FontWeight.w600,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                         color: VoidColors.grey2,
                                                       ),
                                                     ),
@@ -407,24 +523,42 @@ class _SearchScreenState extends State<SearchScreen> {
                                                     Wrap(
                                                       spacing: 10.w,
                                                       runSpacing: 10.h,
-                                                      children: List.generate(user.interests.length, (index) {
+                                                      children: List.generate(
+                                                          user.interests.length,
+                                                          (index) {
                                                         return Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.5.h),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10.w,
+                                                                  vertical:
+                                                                      5.5.h),
                                                           height: 28.h,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(50.r),
-                                                            color: VoidColors.whiteColor,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50.r),
+                                                            color: VoidColors
+                                                                .whiteColor,
                                                             border: Border.all(
-                                                              color: VoidColors.lightGrey,
+                                                              color: VoidColors
+                                                                  .lightGrey,
                                                               width: 2,
                                                             ),
                                                           ),
                                                           child: Text(
-                                                            user.interests[index],
-                                                            style: GoogleFonts.poppins(
+                                                            user.interests[
+                                                                index],
+                                                            style: GoogleFonts
+                                                                .poppins(
                                                               fontSize: 10.sp,
-                                                              fontWeight: FontWeight.w400,
-                                                              color: VoidColors.blackColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: VoidColors
+                                                                  .blackColor,
                                                             ),
                                                           ),
                                                         );
@@ -440,39 +574,84 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 height: 72.h,
                                                 width: 158.w,
                                                 decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(100.r),
-                                                  color: VoidColors.grey2.withOpacity(0.2),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.r),
+                                                  color: VoidColors.grey2
+                                                      .withOpacity(0.2),
                                                 ),
                                                 child: Obx(() {
                                                   return Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () {
-                                                          searchScreenController.toggleChatMusic();
-                                                         Get.toNamed(
-          Routes.CHAT_DETAIL_SCREEN,
-          arguments: {
-            'name': user.name,
-            'imgPath': user.profilePicture,
-            'coins': 0,
-            "coinIcon" : "assets/icons/coin.png"
-          },
-        );
+                                                          searchScreenController
+                                                              .toggleChatMusic();
+                                                          Get.toNamed(
+                                                            Routes
+                                                                .CHAT_DETAIL_SCREEN,
+                                                            arguments: {
+                                                              'name': user.name,
+                                                              'imgPath': user
+                                                                  .profilePicture,
+                                                              'coins':
+                                                                  user.coins ??
+                                                                      0,
+                                                              "coinIcon":
+                                                                  "assets/icons/coin.png",
+                                                              'chatModel':
+                                                                  ChatModel(
+                                                                receiverId:
+                                                                    user.id,
+                                                                messages: [],
+                                                                userDetails:
+                                                                    UserDetails(
+                                                                  coins:
+                                                                      user.coins ??
+                                                                          0,
+                                                                  profilePicture:
+                                                                      user.profilePicture,
+                                                                  name:
+                                                                      user.name,
+                                                                ),
+                                                              ),
+                                                            },
+                                                          );
                                                         },
                                                         child: Container(
                                                           height: 56.h,
                                                           width: 56.w,
-                                                          decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: searchScreenController.isChat.value ? VoidColors.secondary : VoidColors.whiteColor,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: searchScreenController
+                                                                    .isChat
+                                                                    .value
+                                                                ? VoidColors
+                                                                    .secondary
+                                                                : VoidColors
+                                                                    .whiteColor,
                                                           ),
                                                           child: Center(
-                                                            child: SvgPicture.asset(
+                                                            child: SvgPicture
+                                                                .asset(
                                                               "assets/icons/chat1.svg",
                                                               height: 30.h,
                                                               width: 30.w,
-                                                              colorFilter: ColorFilter.mode(searchScreenController.isChat.value ? VoidColors.whiteColor : VoidColors.secondary, BlendMode.srcIn),
+                                                              colorFilter: ColorFilter.mode(
+                                                                  searchScreenController
+                                                                          .isChat
+                                                                          .value
+                                                                      ? VoidColors
+                                                                          .whiteColor
+                                                                      : VoidColors
+                                                                          .secondary,
+                                                                  BlendMode
+                                                                      .srcIn),
                                                             ),
                                                           ),
                                                         ),
@@ -480,22 +659,42 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       SizedBox(width: 20.w),
                                                       GestureDetector(
                                                         onTap: () {
-                                                          searchScreenController.toggleChatMusic();
-                                                          Get.to(()=>JammingScreenView());
+                                                          searchScreenController
+                                                              .toggleChatMusic();
+                                                          Get.to(() =>
+                                                              JammingScreenView());
                                                         },
                                                         child: Container(
                                                           height: 56.h,
                                                           width: 56.w,
-                                                          decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: searchScreenController.isChat.value ? VoidColors.whiteColor : VoidColors.secondary,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: searchScreenController
+                                                                    .isChat
+                                                                    .value
+                                                                ? VoidColors
+                                                                    .whiteColor
+                                                                : VoidColors
+                                                                    .secondary,
                                                           ),
                                                           child: Center(
-                                                            child: SvgPicture.asset(
+                                                            child: SvgPicture
+                                                                .asset(
                                                               "assets/icons/music.svg",
                                                               height: 30.h,
                                                               width: 30.w,
-                                                              colorFilter: ColorFilter.mode(searchScreenController.isChat.value ? VoidColors.secondary : VoidColors.whiteColor, BlendMode.srcIn),
+                                                              colorFilter: ColorFilter.mode(
+                                                                  searchScreenController
+                                                                          .isChat
+                                                                          .value
+                                                                      ? VoidColors
+                                                                          .secondary
+                                                                      : VoidColors
+                                                                          .whiteColor,
+                                                                  BlendMode
+                                                                      .srcIn),
                                                             ),
                                                           ),
                                                         ),

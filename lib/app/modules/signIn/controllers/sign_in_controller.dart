@@ -22,7 +22,7 @@ class SignInController extends GetxController {
   var token = ''.obs; // Store token here
   var id = ''.obs; // Store id here
   var latitude = 0.0.obs;
-  var longitude = 0.0.obs;
+  // var longitude = 0.0.obs;
   var webSocketResponse = ''.obs;
 
   Future<void> signIn(String email, String password) async {
