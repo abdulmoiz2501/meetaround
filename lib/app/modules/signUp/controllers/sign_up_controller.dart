@@ -122,7 +122,8 @@ class SignUpController extends GetxController {
     });
 
     try {
-      final response = await http.post(Uri.parse(apiUrl), headers: headers, body: body);
+      final response =
+          await http.post(Uri.parse(apiUrl), headers: headers, body: body);
       final responseData = json.decode(response.body);
 
       if (responseData['responseCode'] == '4001') {
@@ -304,7 +305,8 @@ class SignUpController extends GetxController {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         Get.snackbar('Error', 'Location permissions are denied.',
-            backgroundColor: VoidColors.primary, colorText: VoidColors.secondary);
+            backgroundColor: VoidColors.primary,
+            colorText: VoidColors.secondary);
         isLoading.value = false;
         return;
       }
@@ -333,7 +335,7 @@ class SignUpController extends GetxController {
     );
 
     channel.sink.add(jsonEncode({
-      "userId": signInController.id.value,
+      "userId": signInController.userId,
       "latitude": latitude.value.toString(),
       "longitude": longitude.value.toString()
     }));
