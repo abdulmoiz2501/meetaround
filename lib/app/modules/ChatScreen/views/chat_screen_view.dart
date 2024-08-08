@@ -2,19 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/modules/ChatScreen/controllers/chat_screen_controller.dart';
 
 import '../../../utils/constraints/colors.dart';
 import '../../../widgets/chat_list.dart';
 
-class ChatScreenView extends StatelessWidget {
-  final bool hasMessages = true; // Local boolean to toggle between views
+class ChatScreenView extends GetView<ChatScreenController> {
+  final controller = Get.put(ChatScreenController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor:VoidColors.secondary ,
-      appBar: hasMessages ? _buildChatAppBar() : _buildNoMessagesAppBar(),
-      body: hasMessages ? _buildChatBody() : _buildNoMessagesBody(),
+      appBar: controller.hasMessages ? _buildChatAppBar() : _buildNoMessagesAppBar(),
+      body:
+       controller.hasMessages ?
+        _buildChatBody() : 
+        _buildNoMessagesBody(),
     );
   }
 
@@ -168,19 +172,22 @@ class ChatScreenView extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(12.h),
-              itemCount: 5, // Placeholder item count
-              itemBuilder: (context, index) {
-                return ChatListItem(
-                  imageUrl: 'assets/icons/chat.png', // Placeholder image
-                  name: 'User Name',
-                  lastMessage: 'Last message preview',
-                  time: '11:20am',
-                  coinIcon: 'assets/icons/coin.png',
-                  coins: 10,
-                );
-              },
+            child: Obx(()=>ListView.builder(
+                padding: EdgeInsets.all(12.h),
+                itemCount: controller.chatModels.length, // Placeholder item count
+                itemBuilder: (context, index) {
+                  var chatModel = controller.chatModels[index];
+                  return ChatListItem(
+                    imageUrl: chatModel.userDetails!.profilePicture??"", // Placeholder image
+                    name: chatModel.userDetails?.name??"UserName",
+                    lastMessage: chatModel.messages?.last.content.toString()??"",
+                    time: '11:20am',
+                    coinIcon: 'assets/icons/coin.png',
+                    coins: chatModel.userDetails?.coins??0,
+                    chatModel: chatModel,
+                  );
+                },
+              ),
             ),
           ),
         ],

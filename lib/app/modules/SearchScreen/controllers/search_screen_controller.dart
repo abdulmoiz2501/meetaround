@@ -17,10 +17,13 @@ class SearchScreenController extends GetxController {
   var isLoading = false.obs;
   var isChat = false.obs;
   var userStatus = true.obs;
-  var users = <User>[].obs;
-  var distances = <int, double>{}.obs; // Map to store distances for each user by their id
-  var addresses = <int, String>{}.obs; // Map to store addresses for each user by their id
-  var isDistanceLoading = false.obs; // New observable for distance loading state
+  var users = <UserModel>[].obs;
+  var distances =
+      <int, double>{}.obs; // Map to store distances for each user by their id
+  var addresses =
+      <int, String>{}.obs; // Map to store addresses for each user by their id
+  var isDistanceLoading =
+      false.obs; // New observable for distance loading state
   var isAddressLoading = false.obs; // New observable for address loading state
   var comeFromChat = false.obs;
 
@@ -34,7 +37,8 @@ class SearchScreenController extends GetxController {
     final userId = signInController.id.value;
     final token = signInController.token.value;
     ;
-    final url = 'https://meet-around-apis-production.up.railway.app/api/user/getUsers?userId=$userId';
+    final url =
+        'https://meet-around-apis-production.up.railway.app/api/user/getUsers?userId=$userId';
 
     print('Fetching users with URL: $url');
     print('Token: $token');
@@ -55,13 +59,14 @@ class SearchScreenController extends GetxController {
         var jsonResponse = json.decode(response.body);
         var userList = jsonResponse['data'] as List;
         users.value = userList.map((userJson) {
-          return User.fromJson(userJson);
+          return UserModel.fromJson(userJson);
         }).toList();
 
         // Calculate distances and addresses for each user after fetching them
         calculateDistancesAndAddressesForUsers();
       } else {
-        Get.snackbar('Error', 'Failed to fetch users: ${response.reasonPhrase}');
+        Get.snackbar(
+            'Error', 'Failed to fetch users: ${response.reasonPhrase}');
       }
     } catch (e) {
       print("Error occurred: $e");
@@ -80,22 +85,31 @@ class SearchScreenController extends GetxController {
   void calculateDistancesAndAddressesForUsers() async {
     isDistanceLoading(true);
     isAddressLoading(true);
-final lattitude= userController.user.value.latitude;
-    final longitude=userController.user.value.longitude;
+    final lattitude = userController.user.value.latitude;
+    final longitude = userController.user.value.longitude;
     print("********************");
     double myLat = lattitude;
-    double myLong =longitude;
+    double myLong = longitude;
     print(myLat);
     print(myLong);
 
     for (var user in users) {
       if (user.latitude != 0.0 && user.longitude != 0.0) {
-        double calculatedDistance = calculateDistance(myLat, myLong, double.parse(user.latitude.toString()), double.parse(user.longitude.toString()));
-        distances[user.id] = calculatedDistance; // Store the calculated distance for each user by their id
-        print('Calculated distance to user ${user.id}: ${calculatedDistance} km');
+        double calculatedDistance = calculateDistance(
+            myLat,
+            myLong,
+            double.parse(user.latitude.toString()),
+            double.parse(user.longitude.toString()));
+        distances[user.id] =
+            calculatedDistance; // Store the calculated distance for each user by their id
+        print(
+            'Calculated distance to user ${user.id}: ${calculatedDistance} km');
 
-        String address = await getAddressFromLatLng(double.parse(user.latitude.toString()), double.parse(user.longitude.toString()));
-        addresses[user.id] = address; // Store the calculated address for each user by their id
+        String address = await getAddressFromLatLng(
+            double.parse(user.latitude.toString()),
+            double.parse(user.longitude.toString()));
+        addresses[user.id] =
+            address; // Store the calculated address for each user by their id
         print('Calculated address for user ${user.id}: $address');
       }
     }
@@ -104,15 +118,18 @@ final lattitude= userController.user.value.latitude;
     isAddressLoading(false);
   }
 
-  double calculateDistance(double myLat, double myLong, double userLat, double userLong) {
+  double calculateDistance(
+      double myLat, double myLong, double userLat, double userLong) {
     const double earthRadius = 6371.0; // Earth's radius in kilometers
 
     double dLat = _toRadians(userLat - myLat);
     double dLong = _toRadians(userLong - myLong);
 
     double a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_toRadians(myLat)) * cos(_toRadians(userLat)) *
-        sin(dLong / 2) * sin(dLong / 2);
+        cos(_toRadians(myLat)) *
+            cos(_toRadians(userLat)) *
+            sin(dLong / 2) *
+            sin(dLong / 2);
 
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
@@ -127,7 +144,8 @@ final lattitude= userController.user.value.latitude;
 
   Future<String> getAddressFromLatLng(double latitude, double longitude) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
       Placemark place = placemarks[0];
       return "${place.country}, ${place.locality}}";
     } catch (e) {
@@ -140,4 +158,3 @@ final lattitude= userController.user.value.latitude;
     isChat.value = !isChat.value;
   }
 }
-

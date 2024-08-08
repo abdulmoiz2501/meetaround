@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:scratch_project/app/models/chat_model.dart';
 import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
-final searchScreenController= Get.put(SearchScreenController());
+
+final searchScreenController = Get.put(SearchScreenController());
+
 class ChatListItem extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -13,15 +16,16 @@ class ChatListItem extends StatelessWidget {
   final String time;
   final String coinIcon;
   final int coins;
+  final ChatModel chatModel;
 
-  ChatListItem({
-    required this.imageUrl,
-    required this.name,
-    required this.lastMessage,
-    required this.time,
-    required this.coinIcon,
-    required this.coins,
-  });
+  ChatListItem(
+      {required this.imageUrl,
+      required this.name,
+      required this.lastMessage,
+      required this.time,
+      required this.coinIcon,
+      required this.coins,
+      required this.chatModel});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +38,8 @@ class ChatListItem extends StatelessWidget {
             'name': name,
             'imgPath': imageUrl,
             'coins': coins,
-            "coinIcon" : coinIcon,
+            "coinIcon": coinIcon,
+            'chatModel': chatModel
           },
         );
       },
@@ -48,7 +53,7 @@ class ChatListItem extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              backgroundImage: AssetImage(imageUrl),
+              backgroundImage: NetworkImage(imageUrl),
               radius: 24.r,
             ),
             SizedBox(width: 12.w),
@@ -106,7 +111,6 @@ class ChatListItem extends StatelessWidget {
   }
 }
 
-
 class ChatListItem2 extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -134,7 +138,7 @@ class ChatListItem2 extends StatelessWidget {
             'name': name,
             'imgPath': imageUrl,
             'coins': coins,
-            "coinIcon" : coinIcon,
+            "coinIcon": coinIcon,
           },
         );
       },
