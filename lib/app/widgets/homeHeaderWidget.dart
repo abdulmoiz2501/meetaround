@@ -79,7 +79,7 @@ Column homeHeaderWidget(List<Map<String,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.0.w),
               child: Image.asset(VoidImages.backArrow,
-                height: 32.h, width: 32.w,),
+                height: 22.h, width: 22.w,),
             ),
           ),
           Expanded(
@@ -103,7 +103,7 @@ Column homeHeaderWidget(List<Map<String,
                                   // VoidImages.testImg
                                   items[index]['image']!,
                                 ),
-                                radius: 40.r,
+                                radius: 30.r,
                               ),
                             ),
                             Text(
@@ -134,7 +134,7 @@ Column homeHeaderWidget(List<Map<String,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.0.w),
               child: Image.asset(VoidImages.forwardArrow,
-                height: 32.h, width: 32.w,),
+                height: 22.h, width: 22.w,),
             ),
           )
         ],
@@ -277,7 +277,7 @@ Column homeHeaderWidget2(List<Map<String,
                                     // VoidImages.testImg
                                     items[index]['image']!,
                                   ),
-                                  radius: 40.r,
+                                  radius: 30.r,
                                 ),
                               ),
                               Text(

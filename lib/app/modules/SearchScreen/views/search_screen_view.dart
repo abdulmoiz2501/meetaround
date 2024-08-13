@@ -3,15 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scratch_project/app/modules/ProfileScreen/controllers/profile_screen_controller.dart';
+import 'package:scratch_project/app/controllers/user_controller.dart';
+import 'package:scratch_project/app/models/chat_model.dart';
+import 'package:scratch_project/app/modules/ChatDetailScreen/views/chat_detail_screen_view.dart';
+import 'package:scratch_project/app/modules/JammingScreen/views/jamming_screen_view.dart';
 import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
-import 'package:scratch_project/app/modules/signIn/controllers/sign_in_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
-import 'package:scratch_project/app/utils/constants.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
-import 'package:scratch_project/app/utils/constraints/image_strings.dart';
-import 'package:scratch_project/app/utils/constraints/text_strings.dart';
-import 'package:scratch_project/app/widgets/homeHeaderWidget.dart';
+import 'package:scratch_project/app/widgets/custom_appbar.dart';
 
 class SearchScreen extends StatefulWidget {
   SearchScreen({super.key});
@@ -21,185 +20,706 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final List<Map<String, String>> itemsList = List.generate(
-    10,
-    (index) => {
-      'image': VoidImages.testImg,
-      'name': 'David $index',
-    },
-  );
-
-  final SignInController signInController = Get.put(SignInController());
-  final SearchScreenController searchController = Get.put(SearchScreenController());
-  final ProfileScreenController controller = Get.put(ProfileScreenController());
-
+  final SearchScreenController searchScreenController =
+      Get.put(SearchScreenController());
+  final UserController userController = Get.find();
   @override
   void initState() {
+    searchScreenController.fetchUsers();
     super.initState();
-    searchController.fetchUsers();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: VoidColors.whiteColor,
+      appBar: CustomAppBar(),
       body: Container(
         color: VoidColors.whiteColor,
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              homeHeaderWidget2(
-                itemsList,
-                100.0,
-                () {
-                  Get.toNamed(Routes.SUGGESTED_PEOPLE);
-                },
-                VoidTexts.suggestPeople,
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemCount: searchController.users.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 20.h),
-                    child: Container(
-                      height: 750.h,
-                      width: double.infinity,
-                      child: Stack(
-                        children: [
-                          Image.asset(
-                            "assets/images/girl2.png",
-                            width: double.infinity,
-                            fit: BoxFit.cover,
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 24.h),
+            child: Column(
+              children: [
+                // Top Picks to enjoy jamming
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Top Picks to enjoy jamming:",
+                        style: GoogleFonts.poppins(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w500,
+                          color: VoidColors.blackColor,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // See All
+                        },
+                        child: Text(
+                          "See All",
+                          style: GoogleFonts.poppins(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color: VoidColors.redColor,
                           ),
-                          Positioned(
-                            top: 400.h,
-                            right: 25.w,
-                            child: Container(
-                              width: ScreenUtil().screenWidth - 50.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.r),
-                                color: Colors.white,
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Users
+                Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+                  child: SizedBox(
+                    height: 110.h,
+                    child: Obx(() {
+                      if (searchScreenController.isLoading.value) {
+                        return Container(
+                          color: VoidColors.whiteColor,
+                          height: 500.h,
+                          width: double.infinity,
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            color: VoidColors.secondary,
+                          )),
+                        );
+                      }
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: searchScreenController.users.length,
+                        itemBuilder: (context, index) {
+                          final user = searchScreenController.users[index];
+
+                          return Padding(
+                            padding: EdgeInsets.all(8.h),
+                            child: Column(
+                              children: [
+                                Stack(
                                   children: [
-                                    Text(
-                                      "Music Genres:",
-                                      style: GoogleFonts.manrope(
-                                        fontSize: 16.sp,
-                                        fontWeight: FontWeight.w600,
-                                        color: VoidColors.blackColor,
+                                    Container(
+                                      height: 60.63.h,
+                                      width: 60.63.w,
+                                      decoration:
+                                          BoxDecoration(shape: BoxShape.circle),
+                                      child: ClipRRect(
+                                        borderRadius:
+                                            BorderRadius.circular(100.r),
+                                        child: Image.network(
+                                            user.profilePicture,
+                                            fit: BoxFit.cover),
                                       ),
                                     ),
-                                    SizedBox(height: 20.h),
-                                    Wrap(
-                                      spacing: 10.w,
-                                      runSpacing: 10.h,
-                                      children: List.generate(musicGeners.length, (index) {
-                                        return GestureDetector(
-                                          onTap: () {
-                                            controller.toggleMusicGenre(index);
-                                          },
-                                          child: Obx(() {
-                                            bool isSelected = controller.selectedMusicGenres.contains(index);
-                                            return Container(
-                                              padding: EdgeInsets.only(left: 10.w, right: 10.w, top: 5.5.h),
-                                              height: 28.h,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(50.r),
-                                                color: isSelected ? VoidColors.secondary : VoidColors.whiteColor,
-                                                border: Border.all(
-                                                  color: VoidColors.grey2,
-                                                ),
-                                              ),
-                                              child: Text(
-                                                musicGeners[index],
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 10.sp,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: isSelected ? VoidColors.whiteColor : VoidColors.blackColor,
-                                                ),
-                                              ),
-                                            );
-                                          }),
+                                    Positioned(
+                                      bottom: 1,
+                                      right: 1,
+                                      child: Obx(() {
+                                        return Container(
+                                          height: 14.h,
+                                          width: 14.w,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color:
+                                                userController.status.value ==
+                                                            null ||
+                                                        userController
+                                                                .status.value ==
+                                                            false
+                                                    ? VoidColors.grey2
+                                                    : VoidColors.green,
+                                          ),
                                         );
                                       }),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        searchController.fetchUsers();
-                                        print(searchController.users);
-                                      },
-                                      child: Container(
-                                        height: 40.h,
-                                        width: 90.w,
-                                        color: Colors.black,
-                                        child: Text(
-                                          signInController.id.value,
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
+                                  ],
+                                ),
+                                SizedBox(height: 5.h),
+                                Text(
+                                  user.name,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: VoidColors.blackColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }),
+                  ),
+                ),
+                // User profiles
+                SizedBox(
+                  width: double.infinity,
+                  child: Obx(() {
+                    if (searchScreenController.isLoading.value) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: VoidColors.secondary,
+                      ));
+                    }
+                    return ListView.builder(
+                      itemCount: searchScreenController.users.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final user = searchScreenController.users[index];
+                        final distance = searchScreenController
+                                .distances[user.id]
+                                ?.toInt()
+                                .toString() ??
+                            'N/A';
+                        final address =
+                            searchScreenController.addresses[user.id] ??
+                                'Unknown Location';
+                        return Container(
+                          height: 800.h,
+                          child: Stack(
+                            children: [
+                              Container(
+                                height: 644.h,
+                                width: double.infinity,
+                                child: Image.network(user.profilePicture,
+                                    fit: BoxFit.cover),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(15.h),
+                                child: Container(
+                                  height: 800.h,
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    border: Border(
+                                      top: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
+                                      left: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
+                                      right: BorderSide(
+                                          color: VoidColors.whiteColor,
+                                          width: 1.w),
                                     ),
-                                    SizedBox(height: 20.h),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.h),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Container(
-                                          height: 56.h,
-                                          width: 56.w,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: VoidColors.lightGrey,
-                                          ),
-                                          child: Center(
-                                            child: SvgPicture.asset(
-                                              "assets/icons/chat1.svg",
-                                              height: 30.h,
-                                              width: 30.w,
-                                              colorFilter: ColorFilter.mode(VoidColors.secondary, BlendMode.srcIn),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: 20.w),
-                                        GestureDetector(
-                                          onTap: () {
-                                            searchController.fetchUsers();
-                                            print(searchController.users);
-                                          },
-                                          child: Container(
-                                            height: 56.h,
-                                            width: 56.w,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: VoidColors.secondary,
-                                            ),
-                                            child: Center(
-                                              child: SvgPicture.asset(
-                                                "assets/icons/music.svg",
-                                                height: 30.h,
-                                                width: 30.w,
-                                                colorFilter: ColorFilter.mode(VoidColors.whiteColor, BlendMode.srcIn),
+                                        Obx(() {
+                                          if (searchScreenController
+                                              .isDistanceLoading.value) {
+                                            return Align(
+                                              alignment: Alignment.topRight,
+                                              child: Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  color: VoidColors.whiteColor
+                                                      .withOpacity(0.4),
+                                                  strokeWidth: 2,
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          return Align(
+                                            alignment: Alignment.topRight,
+                                            child: IntrinsicWidth(
+                                              child: Container(
+                                                //  width: 94.w,
+                                                height: 40.h,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          32.r),
+                                                  color: VoidColors.blackColor
+                                                      .withOpacity(0.2),
+                                                  border: Border.all(
+                                                    color: VoidColors.whiteColor
+                                                        .withOpacity(0.4),
+                                                    width: 1.w,
+                                                  ),
+                                                ),
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: 5.w),
+                                                  child: Center(
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 16.h,
+                                                          width: 16.w,
+                                                          child: Center(
+                                                            child: SvgPicture.asset(
+                                                                "assets/icons/distance.svg"),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 3..w,
+                                                        ),
+                                                        Text(
+                                                          '$distance km',
+                                                          style: GoogleFonts
+                                                              .poppins(
+                                                            fontSize: 16.sp,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                            color: VoidColors
+                                                                .whiteColor,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
                                             ),
-                                          ),
+                                          );
+                                        }),
+                                        Column(
+                                          children: [
+                                            Stack(
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                      Alignment.bottomCenter,
+                                                  child: IntrinsicWidth(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12.r),
+                                                        color: VoidColors
+                                                            .whiteColor
+                                                            .withOpacity(0.2),
+                                                      ),
+                                                      child: Stack(
+                                                        children: [
+                                                          Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    8.h),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      user.name,
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w700,
+                                                                        fontSize:
+                                                                            21.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    Text(
+                                                                      user.id
+                                                                          .toString(),
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        fontSize:
+                                                                            21.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
+                                                                      ),
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    SvgPicture
+                                                                        .asset(
+                                                                      "assets/icons/var.svg",
+                                                                      height:
+                                                                          16.h,
+                                                                      width:
+                                                                          16.w,
+                                                                    ),
+                                                                    SizedBox(
+                                                                        width: 5
+                                                                            .w),
+                                                                    Text(
+                                                                      userController.verified.value == null ||
+                                                                              userController.verified.value == false
+                                                                          ? "Not Verified"
+                                                                          : "Id Verified",
+                                                                      style: GoogleFonts
+                                                                          .poppins(
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                        fontSize:
+                                                                            10.sp,
+                                                                        color: VoidColors
+                                                                            .whiteColor,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    Obx(() {
+                                                                      if (searchScreenController
+                                                                          .isAddressLoading
+                                                                          .value) {
+                                                                        return Center(
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            color:
+                                                                                VoidColors.secondary,
+                                                                            strokeWidth:
+                                                                                2,
+                                                                          ),
+                                                                        );
+                                                                      }
+                                                                      return Text(
+                                                                        address,
+                                                                        style: GoogleFonts
+                                                                            .poppins(
+                                                                          fontWeight:
+                                                                              FontWeight.w400,
+                                                                          fontSize:
+                                                                              12.sp,
+                                                                          color:
+                                                                              VoidColors.whiteColor,
+                                                                        ),
+                                                                      );
+                                                                    }),
+                                                                    SizedBox(
+                                                                        width: 15
+                                                                            .w),
+                                                                    Row(
+                                                                      children: [
+                                                                        SvgPicture
+                                                                            .asset(
+                                                                          "assets/icons/coin1.svg",
+                                                                          height:
+                                                                              16.h,
+                                                                          width:
+                                                                              16.w,
+                                                                        ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5.w),
+                                                                        Text(
+                                                                          userController.coins.value == null || userController.verified.value == 0
+                                                                              ? '0'
+                                                                              : userController.coins.value.toString(), // user.coins,
+                                                                          style:
+                                                                              GoogleFonts.poppins(
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                            fontSize:
+                                                                                14.sp,
+                                                                            color:
+                                                                                VoidColors.whiteColor,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Positioned(
+                                                            right: 1,
+                                                            child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left: 0),
+                                                              child: Obx(() {
+                                                                return Container(
+                                                                  height: 14.h,
+                                                                  width: 14.w,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: userController.status.value ==
+                                                                                null ||
+                                                                            userController.status.value ==
+                                                                                false
+                                                                        ? VoidColors
+                                                                            .grey2
+                                                                        : VoidColors
+                                                                            .green,
+                                                                  ),
+                                                                );
+                                                              }),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 30.h),
+                                            Container(
+                                              width: ScreenUtil().screenWidth -
+                                                  50.w,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft:
+                                                      Radius.circular(40.r),
+                                                  topRight:
+                                                      Radius.circular(40.r),
+                                                ),
+                                                color:
+                                                    VoidColors.bottomNavColor,
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.2),
+                                                    offset: Offset(0, 5),
+                                                    blurRadius: 10.r,
+                                                    spreadRadius: 2.r,
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 15.w,
+                                                    vertical: 20.h),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      "Music genre:",
+                                                      style:
+                                                          GoogleFonts.manrope(
+                                                        fontSize: 16.sp,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: VoidColors.grey2,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20.h),
+                                                    Wrap(
+                                                      spacing: 10.w,
+                                                      runSpacing: 10.h,
+                                                      children: List.generate(
+                                                          user.interests.length,
+                                                          (index) {
+                                                        return Container(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      10.w,
+                                                                  vertical:
+                                                                      5.5.h),
+                                                          height: 28.h,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50.r),
+                                                            color: VoidColors
+                                                                .whiteColor,
+                                                            border: Border.all(
+                                                              color: VoidColors
+                                                                  .lightGrey,
+                                                              width: 2,
+                                                            ),
+                                                          ),
+                                                          child: Text(
+                                                            user.interests[
+                                                                index],
+                                                            style: GoogleFonts
+                                                                .poppins(
+                                                              fontSize: 10.sp,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400,
+                                                              color: VoidColors
+                                                                  .blackColor,
+                                                            ),
+                                                          ),
+                                                        );
+                                                      }),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 20.h),
+                                            Center(
+                                              child: Container(
+                                                height: 72.h,
+                                                width: 158.w,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          100.r),
+                                                  color: VoidColors.grey2
+                                                      .withOpacity(0.2),
+                                                ),
+                                                child: Obx(() {
+                                                  return Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          searchScreenController
+                                                              .toggleChatMusic();
+                                                          Get.toNamed(
+                                                            Routes
+                                                                .CHAT_DETAIL_SCREEN,
+                                                            arguments: {
+                                                              'name': user.name,
+                                                              'imgPath': user
+                                                                  .profilePicture,
+                                                              'coins':
+                                                                  user.coins ??
+                                                                      0,
+                                                              "coinIcon":
+                                                                  "assets/icons/coin.png",
+                                                              'chatModel':
+                                                                  ChatModel(
+                                                                receiverId:
+                                                                    user.id,
+                                                                messages: [],
+                                                                userDetails:
+                                                                    UserDetails(
+                                                                  coins:
+                                                                      user.coins ??
+                                                                          0,
+                                                                  profilePicture:
+                                                                      user.profilePicture,
+                                                                  name:
+                                                                      user.name,
+                                                                ),
+                                                              ),
+                                                            },
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 56.h,
+                                                          width: 56.w,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: searchScreenController
+                                                                    .isChat
+                                                                    .value
+                                                                ? VoidColors
+                                                                    .secondary
+                                                                : VoidColors
+                                                                    .whiteColor,
+                                                          ),
+                                                          child: Center(
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/chat1.svg",
+                                                              height: 30.h,
+                                                              width: 30.w,
+                                                              colorFilter: ColorFilter.mode(
+                                                                  searchScreenController
+                                                                          .isChat
+                                                                          .value
+                                                                      ? VoidColors
+                                                                          .whiteColor
+                                                                      : VoidColors
+                                                                          .secondary,
+                                                                  BlendMode
+                                                                      .srcIn),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 20.w),
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          searchScreenController
+                                                              .toggleChatMusic();
+                                                          Get.to(() =>
+                                                              JammingScreenView());
+                                                        },
+                                                        child: Container(
+                                                          height: 56.h,
+                                                          width: 56.w,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            color: searchScreenController
+                                                                    .isChat
+                                                                    .value
+                                                                ? VoidColors
+                                                                    .whiteColor
+                                                                : VoidColors
+                                                                    .secondary,
+                                                          ),
+                                                          child: Center(
+                                                            child: SvgPicture
+                                                                .asset(
+                                                              "assets/icons/music.svg",
+                                                              height: 30.h,
+                                                              width: 30.w,
+                                                              colorFilter: ColorFilter.mode(
+                                                                  searchScreenController
+                                                                          .isChat
+                                                                          .value
+                                                                      ? VoidColors
+                                                                          .secondary
+                                                                      : VoidColors
+                                                                          .whiteColor,
+                                                                  BlendMode
+                                                                      .srcIn),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                }),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ],
+            ),
           ),
         ),
       ),

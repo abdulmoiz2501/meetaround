@@ -24,7 +24,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 5), () {
-      Get.toNamed(Routes.SECOND_SPLASH);
+      Get.offAll(()=>SecondSplashView());
     });
 
   }

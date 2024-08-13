@@ -3,8 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scratch_project/app/models/chat_model.dart';
+import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
+
+final searchScreenController = Get.put(SearchScreenController());
 
 class ChatListItem extends StatelessWidget {
   final String imageUrl;
@@ -15,28 +18,28 @@ class ChatListItem extends StatelessWidget {
   final int coins;
   final ChatModel chatModel;
 
-  ChatListItem({
-    required this.imageUrl,
-    required this.name,
-    required this.lastMessage,
-    required this.time,
-    required this.coinIcon,
-    required this.coins,
-    required this.chatModel
-  });
+  ChatListItem(
+      {required this.imageUrl,
+      required this.name,
+      required this.lastMessage,
+      required this.time,
+      required this.coinIcon,
+      required this.coins,
+      required this.chatModel});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        searchScreenController.isChat(false);
         Get.toNamed(
           Routes.CHAT_DETAIL_SCREEN,
           arguments: {
             'name': name,
             'imgPath': imageUrl,
             'coins': coins,
-            "coinIcon" : coinIcon,
-            'chatModel':chatModel
+            "coinIcon": coinIcon,
+            'chatModel': chatModel
           },
         );
       },
@@ -108,7 +111,6 @@ class ChatListItem extends StatelessWidget {
   }
 }
 
-
 class ChatListItem2 extends StatelessWidget {
   final String imageUrl;
   final String name;
@@ -136,7 +138,7 @@ class ChatListItem2 extends StatelessWidget {
             'name': name,
             'imgPath': imageUrl,
             'coins': coins,
-            "coinIcon" : coinIcon,
+            "coinIcon": coinIcon,
           },
         );
       },

@@ -9,6 +9,7 @@ import 'package:scratch_project/app/controllers/user_controller.dart';
 import 'package:scratch_project/app/models/chat_model.dart';
 import 'package:scratch_project/app/modules/ChatDetailScreen/controllers/chat_detail_screen_controller.dart';
 import 'package:scratch_project/app/modules/ChatScreen/controllers/chat_screen_controller.dart';
+import 'package:scratch_project/app/modules/SearchScreen/controllers/search_screen_controller.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 
@@ -108,60 +109,95 @@ class ChatDetailScreenView extends StatelessWidget {
             Expanded(
               child: Obx(() {
                 return Column(
-                  children: List.generate(
-                     controller.chatModels.length,
-                    ( index1) {
-                      print(
-                          ":::: User Name is ${controller.chatModels[index1].userDetails?.name == name}");
-                      if (controller.chatModels[index1].userDetails?.name ==
-                          name) {
-                        print(
-                            "::: inside message ${controller.chatModels[index1].messages?.first.content}");
-                        var messages = controller.chatModels[index1].messages;
-                        var userDetails =
-                            controller.chatModels[index1].userDetails;
+                    children:
+                        List.generate(controller.chatModels.length, (index1) {
+                  print(
+                      ":::: User Name is ${controller.chatModels[index1].userDetails?.name == name}");
+                  if (controller.chatModels[index1].userDetails?.name == name) {
+                    print(
+                        "::: inside message ${controller.chatModels[index1].messages?.first.content}");
+                    var messages = controller.chatModels[index1].messages;
+                    var userDetails = controller.chatModels[index1].userDetails;
 
-                        print(":::: Messages length ${messages?.length}");
-                        return Expanded(
-                          
-                          child: Obx((){
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _scrollController.jumpTo(
-                    _scrollController.position.maxScrollExtent,
-                  );
-                });
-                            return ListView.builder(
-                              padding: EdgeInsets.all(10.w),
-                              itemCount:
-                                  controller.chatModels[index1].messages?.length,
-                              reverse: false,
-                              itemBuilder: (context, index) {
-                                final message = controller
-                                    .chatModels[index1].messages?[index];
-                                print(":::: Message index is $index");
-                            
-                                print(
-                                    ':::: current User id ${userController.user.value.id}');
-                                print(
-                                    ':::: current message id ${message?.senderId}');
-                                return Column(
-                                  children: [
-                                    //  Center(
-                                    //                child: Text(index==3?"We75656565d 22 June":"Today",style: GoogleFonts.lato(
-                                    //                  fontSize:14.sp,
-                                    //                  fontWeight: FontWeight.w500,
-                                    //                  color:VoidColors.whiteColor
-                                    //                ),),
-                                    //              ),
-                                    Align(
-                                      alignment: controller.chatModels[index1]
-                                                  .messages?[index].senderId ==
-                                              userController.user.value.id
-                                          ? Alignment.centerRight
-                                          : Alignment.centerLeft,
-                                      child: message?.senderId ==
-                                              userController.user.value.id
-                                          ? Container(
+                    print(":::: Messages length ${messages?.length}");
+                    return Expanded(
+                      child: Obx(() {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _scrollController.jumpTo(
+                            _scrollController.position.maxScrollExtent,
+                          );
+                        });
+                        return ListView.builder(
+                          padding: EdgeInsets.all(10.w),
+                          itemCount:
+                              controller.chatModels[index1].messages?.length,
+                          reverse: false,
+                          itemBuilder: (context, index) {
+                            final message =
+                                controller.chatModels[index1].messages?[index];
+                            print(":::: Message index is $index");
+
+                            print(
+                                ':::: current User id ${userController.user.value.id}');
+                            print(
+                                ':::: current message id ${message?.senderId}');
+                            return Column(
+                              children: [
+                                //  Center(
+                                //                child: Text(index==3?"We75656565d 22 June":"Today",style: GoogleFonts.lato(
+                                //                  fontSize:14.sp,
+                                //                  fontWeight: FontWeight.w500,
+                                //                  color:VoidColors.whiteColor
+                                //                ),),
+                                //              ),
+                                Align(
+                                  alignment: controller.chatModels[index1]
+                                              .messages?[index].senderId ==
+                                          userController.user.value.id
+                                      ? Alignment.centerRight
+                                      : Alignment.centerLeft,
+                                  child: message?.senderId ==
+                                          userController.user.value.id
+                                      ? Container(
+                                          //height: 68.h,
+                                          width: 266.w,
+                                          margin: EdgeInsets.symmetric(
+                                              vertical: 5.h),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10.w, vertical: 10.h),
+                                          decoration: BoxDecoration(
+                                              color: controller
+                                                          .chatModels[index1]
+                                                          .messages?[index]
+                                                          .senderId ==
+                                                      userController
+                                                          .user.value.id
+                                                  ? VoidColors.lightPink
+                                                  : VoidColors.whiteColor,
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(24.r),
+                                                topRight: Radius.circular(24.r),
+                                                bottomLeft:
+                                                    Radius.circular(24.r),
+                                                // bottomRight:
+                                              )),
+                                          child: Text(
+                                            message?.content ?? "",
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 14.sp,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        )
+                                      : Row(
+                                          children: [
+                                            Image.network(
+                                              userDetails?.profilePicture ?? '',
+                                              height: 40.h,
+                                              width: 40.w,
+                                            ),
+                                            SizedBox(width: 10.w),
+                                            Container(
                                               //height: 68.h,
                                               width: 266.w,
                                               margin: EdgeInsets.symmetric(
@@ -171,14 +207,16 @@ class ChatDetailScreenView extends StatelessWidget {
                                                   vertical: 10.h),
                                               decoration: BoxDecoration(
                                                   color: controller
-                                                              .chatModels[index1]
+                                                              .chatModels[
+                                                                  index1]
                                                               .messages?[index]
-                                                              .senderId ==
+                                                              ?.senderId ==
                                                           userController
                                                               .user.value.id
                                                       ? VoidColors.lightPink
                                                       : VoidColors.whiteColor,
-                                                  borderRadius: BorderRadius.only(
+                                                  borderRadius:
+                                                      BorderRadius.only(
                                                     topLeft:
                                                         Radius.circular(24.r),
                                                     topRight:
@@ -188,138 +226,90 @@ class ChatDetailScreenView extends StatelessWidget {
                                                     // bottomRight:
                                                   )),
                                               child: Text(
-                                                message?.content ?? "",
+                                                controller
+                                                        .chatModels[index1]
+                                                        .messages?[index]
+                                                        .content ??
+                                                    "",
                                                 style: GoogleFonts.poppins(
                                                   fontSize: 14.sp,
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                            )
-                                          : Row(
-                                              children: [
-                                                Image.network(
-                                                  userDetails?.profilePicture ??
-                                                      '',
-                                                  height: 40.h,
-                                                  width: 40.w,
-                                                ),
-                                                SizedBox(width: 10.w),
-                                                Container(
-                                                  //height: 68.h,
-                                                  width: 266.w,
-                                                  margin: EdgeInsets.symmetric(
-                                                      vertical: 5.h),
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10.w,
-                                                      vertical: 10.h),
-                                                  decoration: BoxDecoration(
-                                                      color: controller
-                                                                  .chatModels[
-                                                                      index1]
-                                                                  .messages?[
-                                                                      index]
-                                                                  ?.senderId ==
-                                                              userController
-                                                                  .user.value.id
-                                                          ? VoidColors.lightPink
-                                                          : VoidColors.whiteColor,
-                                                      borderRadius:
-                                                          BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(24.r),
-                                                        topRight:
-                                                            Radius.circular(24.r),
-                                                        bottomLeft:
-                                                            Radius.circular(24.r),
-                                                        // bottomRight:
-                                                      )),
-                                                  child: Text(
-                                                    controller
-                                                            .chatModels[index1]
-                                                            .messages?[index]
-                                                            .content ??
-                                                        "",
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 14.sp,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
                                             ),
-                                    ),
-                                  ],
-                                );
-                                // :Align(
-                                //   alignment: message?.senderId == userController.user.value.id
-                                //       ? Alignment.centerRight
-                                //       : Alignment.centerLeft,
-                                //   child:message?.senderId == userController.user.value.id? Container(
-                                //     //height: 68.h,
-                                //     width: 266.w,
-                                //     margin: EdgeInsets.symmetric(vertical: 5.h),
-                                //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                                //     decoration: BoxDecoration(
-                            
-                                //       color: message?.senderId == userController.user.value.id
-                                //           ? VoidColors.lightPink
-                                //           : VoidColors.whiteColor,
-                                //       borderRadius: BorderRadius.only(
-                                //         topLeft: Radius.circular(24.r),
-                                //         topRight: Radius.circular(24.r),
-                                //         bottomLeft: Radius.circular(24.r),
-                                //        // bottomRight:
-                                //       )
-                                //     ),
-                                //     child: Text(
-                                //       message?.content??"",
-                                //       style: GoogleFonts.poppins(
-                                //         fontSize: 14.sp,
-                                //         color: Colors.black,
-                                //       ),
-                                //     ),
-                                //   ):Row(
-                                //     children: [
-                                //       Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
-                                //       SizedBox(width:10.w),
-                                //       Container(
-                                //         //height: 68.h,
-                                //         width: 266.w,
-                                //         margin: EdgeInsets.symmetric(vertical: 5.h),
-                                //         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                                //         decoration: BoxDecoration(
-                            
-                                //           color: message?.senderId == userController.user.value.id
-                                //               ? VoidColors.lightPink
-                                //               : VoidColors.whiteColor,
-                                //           borderRadius: BorderRadius.only(
-                                //             topLeft: Radius.circular(24.r),
-                                //             topRight: Radius.circular(24.r),
-                                //             bottomLeft: Radius.circular(24.r),
-                                //            // bottomRight:
-                                //           )
-                                //         ),
-                                //         child: Text(
-                                //           message?.content??"",
-                                //           style: GoogleFonts.poppins(
-                                //             fontSize: 14.sp,
-                                //             color: Colors.black,
-                                //           ),
-                                //         ),
-                                //       ),
-                                //     ],
-                                //   ),
-                                // );
-                              },
+                                          ],
+                                        ),
+                                ),
+                              ],
                             );
-                          }
-                          ),
+                            // :Align(
+                            //   alignment: message?.senderId == userController.user.value.id
+                            //       ? Alignment.centerRight
+                            //       : Alignment.centerLeft,
+                            //   child:message?.senderId == userController.user.value.id? Container(
+                            //     //height: 68.h,
+                            //     width: 266.w,
+                            //     margin: EdgeInsets.symmetric(vertical: 5.h),
+                            //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                            //     decoration: BoxDecoration(
+
+                            //       color: message?.senderId == userController.user.value.id
+                            //           ? VoidColors.lightPink
+                            //           : VoidColors.whiteColor,
+                            //       borderRadius: BorderRadius.only(
+                            //         topLeft: Radius.circular(24.r),
+                            //         topRight: Radius.circular(24.r),
+                            //         bottomLeft: Radius.circular(24.r),
+                            //        // bottomRight:
+                            //       )
+                            //     ),
+                            //     child: Text(
+                            //       message?.content??"",
+                            //       style: GoogleFonts.poppins(
+                            //         fontSize: 14.sp,
+                            //         color: Colors.black,
+                            //       ),
+                            //     ),
+                            //   ):Row(
+                            //     children: [
+                            //       Image.asset("assets/icons/chat.png",height: 40.h,width: 40.w,),
+                            //       SizedBox(width:10.w),
+                            //       Container(
+                            //         //height: 68.h,
+                            //         width: 266.w,
+                            //         margin: EdgeInsets.symmetric(vertical: 5.h),
+                            //         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                            //         decoration: BoxDecoration(
+
+                            //           color: message?.senderId == userController.user.value.id
+                            //               ? VoidColors.lightPink
+                            //               : VoidColors.whiteColor,
+                            //           borderRadius: BorderRadius.only(
+                            //             topLeft: Radius.circular(24.r),
+                            //             topRight: Radius.circular(24.r),
+                            //             bottomLeft: Radius.circular(24.r),
+                            //            // bottomRight:
+                            //           )
+                            //         ),
+                            //         child: Text(
+                            //           message?.content??"",
+                            //           style: GoogleFonts.poppins(
+                            //             fontSize: 14.sp,
+                            //             color: Colors.black,
+                            //           ),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // );
+                          },
                         );
-                      } else {
-                        return SizedBox();
-                      }
-                    })
-                );
+                      }),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                }));
               }),
             ),
             Padding(

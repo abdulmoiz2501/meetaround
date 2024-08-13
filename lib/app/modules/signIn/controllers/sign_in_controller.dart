@@ -17,10 +17,12 @@ class SignInController extends GetxController {
   final String _url = "$baseUrl/login";
   final RxMap<String, dynamic> responseData = <String, dynamic>{}.obs;
   var loading = false.obs;
+  var lattitude = 0.0.obs;
+  var longitude = 0.0.obs;
   var token = ''.obs; // Store token here
   var id = ''.obs; // Store id here
   var latitude = 0.0.obs;
-  var longitude = 0.0.obs;
+  // var longitude = 0.0.obs;
   var webSocketResponse = ''.obs;
 
   Future<void> signIn(String email, String password) async {
@@ -99,9 +101,10 @@ class SignInController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     }
   }
+
   String get userId => responseData['id']?.toString() ?? '';
 
-    Future<void> getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -137,5 +140,4 @@ class SignInController extends GetxController {
     latitude.value = position.latitude;
     longitude.value = position.longitude;
   }
-
 }
