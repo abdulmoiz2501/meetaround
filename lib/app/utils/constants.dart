@@ -26,22 +26,26 @@ String timeFormatter(String date) {
 }
 
 var musicGeneres = [
-  'Pop',
-  'Rock',
-  'Hip-Hop',
-  'Dance',
-  'Soul',
-  'Classical',
-  'Romantic',
+  'Made For You',
+  'New Releases',
+  'Summer',
   'Country',
-  'Metal',
-  'Folk',
-  'Punk',
-  'Baroque',
-  'Modern',
+  'Hip-Hop',
+  'La Tierra de Música Mexicana',
+  'Charts',
+  'Pop',
   'Latin',
-  'Afrobeat',
-  'Reggae'
+  'Student',
+  'Discover',
+  'Rock',
+  'Dance/Electronic',
+  'In the car',
+  'Mood',
+  'Indie',
+  'R&B',
+  'Christian & Gospel',
+  'Workout',
+  'Disney'
 ];
 
 var songs = [
@@ -67,22 +71,26 @@ var singer = [
 var profileTabs = ["Preview", "Edit Profile"];
 
 var musicGeners = [
-  'Pop',
-  'Rock',
-  'Hip-Hop',
-  'Dance',
-  'Soul',
-  'Classical',
-  'Romantic',
+  'Made For You',
+  'New Releases',
+  'Summer',
   'Country',
-  'Metal',
-  'Folk',
-  'Punk',
-  'Baroque',
-  'Modern',
+  'Hip-Hop',
+  'La Tierra de Música Mexicana',
+  'Charts',
+  'Pop',
   'Latin',
-  'Afrobeat',
-  'Reggae'
+  'Student',
+  'Discover',
+  'Rock',
+  'Dance/Electronic',
+  'In the car',
+  'Mood',
+  'Indie',
+  'R&B',
+  'Christian & Gospel',
+  'Workout',
+  'Disney'
 ];
 
 final List<String> gender = ["Male", "Female", "Non Binary"];
