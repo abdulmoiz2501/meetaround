@@ -12,14 +12,14 @@ class JammingScreenController extends GetxController {
   var isPlaying = false.obs;
   var isSearching = false.obs;
   var isLoading = true.obs;
-  var spotifyPlaylists = [].obs;
+  var spotifyTracks = [].obs;
   var categories = [].obs;
   var filteredTracks = [].obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchSpotifyCategoriesWithPlaylists();
+    fetchSpotifyTracks();
   }
 
   void toggleSearch() {
@@ -30,7 +30,7 @@ class JammingScreenController extends GetxController {
   }
 
   void clearSearch() {
-    filteredTracks.assignAll(spotifyPlaylists[selectedCategoryIndex.value]['playlists']);
+    filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
   }
 
   Future<void> filterSongs(String query) async {
@@ -47,14 +47,13 @@ class JammingScreenController extends GetxController {
         if (response.statusCode == 200) {
           final List<dynamic> data = json.decode(response.body);
 
-          // Update the filteredTracks list with the search results
           filteredTracks.assignAll(data.map((track) {
             return {
               'name': track['name'],
-              'uri': track['uri'],
-              'images': track['album']['images'],
-              'artist': track['artists'][0]['name'],
-              'album': track['album']['name'],
+              'uri': track['url'],
+              'images': [{'url': track['image']}],
+              'artist': '', // Artist information is not in the response, so leaving it empty
+              'album': '',  // Album information is not in the response, so leaving it empty
             };
           }).toList());
 
@@ -72,8 +71,6 @@ class JammingScreenController extends GetxController {
     }
   }
 
-
-
   void setSelectedSong(String song) {
     selectedSong.value = song;
   }
@@ -85,7 +82,7 @@ class JammingScreenController extends GetxController {
   void setSelectedCategoryIndex(int index) {
     selectedCategoryIndex.value = index;
     selectedCategory.value = categories[index];
-    filteredTracks.assignAll(spotifyPlaylists[index]['playlists']);
+    filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
   }
 
   void setSelectedSongIndex(int index) {
@@ -94,67 +91,61 @@ class JammingScreenController extends GetxController {
 
   Future<void> openSpotifyTrack(String spotifyUri, {bool isArtist = false}) async {
     final Uri spotifyUrl = Uri.parse(spotifyUri);
-    final Uri spotifyWebUrl = isArtist
-        ? Uri.parse("https://open.spotify.com/artist/${spotifyUri.split(':').last}")
-        : Uri.parse("https://open.spotify.com/playlist/${spotifyUri.split(':').last}");
+    final Uri spotifyWebUrl = Uri.parse(spotifyUri);
     final Uri playStoreUrl = Uri.parse("https://play.google.com/store/apps/details?id=com.spotify.music");
 
     print("Spotify URI: $spotifyUri");
     print("Spotify web URL: $spotifyWebUrl");
 
     try {
-      // if (await canLaunch(spotifyUrl.toString())) {
-      //   await launch(spotifyUrl.toString(), forceSafariVC: false, forceWebView: false);
-      // } else {
-      //   await launch(spotifyWebUrl.toString(), forceSafariVC: false, forceWebView: false);
-      // }
       await launchUrl(
         spotifyWebUrl,
         mode: LaunchMode.inAppWebView,
       );
     } catch (e) {
-      // if (await canLaunch(playStoreUrl.toString())) {
-      //   await launch(playStoreUrl.toString());
-      // } else {
-      //   Get.snackbar("Error", "Could not launch Spotify, web link, or Play Store");
-      // }
-      // print(e);
       Get.snackbar("Error", "An error occurred while launching: $e");
       print(e);
     }
   }
 
-
-  Future<void> fetchSpotifyCategoriesWithPlaylists() async {
+  Future<void> fetchSpotifyTracks() async {
     try {
       isLoading.value = true;
       final response = await http.get(
-        Uri.parse('https://meet-around-apis-production.up.railway.app/spotify/categories-with-playlists'),
+        Uri.parse('https://meet-around-apis-production.up.railway.app/spotify/tracks'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        spotifyPlaylists.clear();
+        spotifyTracks.clear();
         categories.clear();
         for (var item in data) {
-          categories.add(item['categoryName']);
-          spotifyPlaylists.add(item);
+          spotifyTracks.add({
+            'name': item['name'],
+            'uri': item['url'],
+            'images': [{'url': item['image']}],
+            'category': item['category'],
+          });
+
+          if (!categories.contains(item['category'])) {
+            categories.add(item['category']);
+          }
         }
 
         // Set default category and playlists
         if (categories.isNotEmpty) {
           selectedCategory.value = categories[0];
-          filteredTracks.assignAll(spotifyPlaylists[0]['playlists']);
+          filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
         }
 
         print('Number of categories fetched: ${categories.length}');
       } else {
-        Get.snackbar("Error", "Failed to load categories from Spotify. Status code: ${response.statusCode}");
-        print('Failed to load categories from Spotify. Status code: ${response.statusCode}');
+        Get.snackbar("Error", "Failed to load tracks from Spotify. Status code: ${response.statusCode}");
+        print('Failed to load tracks from Spotify. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      Get.snackbar("Error", "An error occurred while fetching categories: $e");
+      Get.snackbar("Error", "An error occurred while fetching tracks: $e");
       print(e);
     } finally {
       isLoading.value = false;
