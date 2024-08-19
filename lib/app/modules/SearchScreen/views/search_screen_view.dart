@@ -21,8 +21,9 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final SearchScreenController searchScreenController =
-      Get.put(SearchScreenController());
+  Get.put(SearchScreenController());
   final UserController userController = Get.find();
+
   @override
   void initState() {
     searchScreenController.fetchUsers();
@@ -74,8 +75,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
                 // Users
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
+                  padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 20.h),
                   child: SizedBox(
                     height: 110.h,
                     child: Obx(() {
@@ -86,75 +86,77 @@ class _SearchScreenState extends State<SearchScreen> {
                           width: double.infinity,
                           child: Center(
                               child: CircularProgressIndicator(
-                            color: VoidColors.secondary,
-                          )),
+                                color: VoidColors.secondary,
+                              )),
                         );
                       }
-                      return ListView.builder(
+                      return SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        itemCount: searchScreenController.users.length,
-                        itemBuilder: (context, index) {
-                          final user = searchScreenController.users[index];
-
-                          return Padding(
-                            padding: EdgeInsets.all(8.h),
-                            child: Column(
-                              children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 60.63.h,
-                                      width: 60.63.w,
-                                      decoration:
-                                          BoxDecoration(shape: BoxShape.circle),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100.r),
-                                        child: Image.network(
+                        child: Row(
+                          children: searchScreenController.users.map((user) {
+                            return Padding(
+                              padding: EdgeInsets.all(8.h),
+                              child: Column(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                        height: 60.63.h,
+                                        width: 60.63.w,
+                                        decoration: BoxDecoration(shape: BoxShape.circle),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(100.r),
+                                          child: Image.network(
                                             user.profilePicture,
-                                            fit: BoxFit.cover),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      bottom: 1,
-                                      right: 1,
-                                      child: Obx(() {
-                                        return Container(
-                                          height: 14.h,
-                                          width: 14.w,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color:
-                                                userController.status.value ==
-                                                            null ||
-                                                        userController
-                                                                .status.value ==
-                                                            false
-                                                    ? VoidColors.grey2
-                                                    : VoidColors.green,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Image.asset(
+                                                'assets/images/noimage.png',
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
                                           ),
-                                        );
-                                      }),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 5.h),
-                                Text(
-                                  user.name,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: VoidColors.blackColor,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 1,
+                                        right: 1,
+                                        child: Obx(() {
+                                          return Container(
+                                            height: 14.h,
+                                            width: 14.w,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: userController.status.value == null ||
+                                                  userController.status.value == false
+                                                  ? VoidColors.grey2
+                                                  : VoidColors.green,
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
+
+                                  SizedBox(height: 5.h),
+                                  Text(
+                                    user.name,
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w400,
+                                      color: VoidColors.blackColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       );
                     }),
                   ),
                 ),
+
                 // User profiles
                 SizedBox(
                   width: double.infinity,
@@ -162,8 +164,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     if (searchScreenController.isLoading.value) {
                       return Center(
                           child: CircularProgressIndicator(
-                        color: VoidColors.secondary,
-                      ));
+                            color: VoidColors.secondary,
+                          ));
                     }
                     return ListView.builder(
                       itemCount: searchScreenController.users.length,
@@ -172,9 +174,9 @@ class _SearchScreenState extends State<SearchScreen> {
                       itemBuilder: (context, index) {
                         final user = searchScreenController.users[index];
                         final distance = searchScreenController
-                                .distances[user.id]
-                                ?.toInt()
-                                .toString() ??
+                            .distances[user.id]
+                            ?.toInt()
+                            .toString() ??
                             'N/A';
                         final address =
                             searchScreenController.addresses[user.id] ??
@@ -186,8 +188,16 @@ class _SearchScreenState extends State<SearchScreen> {
                               Container(
                                 height: 644.h,
                                 width: double.infinity,
-                                child: Image.network(user.profilePicture,
-                                    fit: BoxFit.cover),
+                                child: Image.network(
+                                  user.profilePicture,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/noimage.png',
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(15.h),
@@ -213,9 +223,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                     padding: EdgeInsets.all(10.h),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: [
                                         Obx(() {
                                           if (searchScreenController
@@ -224,7 +234,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                               alignment: Alignment.topRight,
                                               child: Center(
                                                 child:
-                                                    CircularProgressIndicator(
+                                                CircularProgressIndicator(
                                                   color: VoidColors.whiteColor
                                                       .withOpacity(0.4),
                                                   strokeWidth: 2,
@@ -236,12 +246,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                             alignment: Alignment.topRight,
                                             child: IntrinsicWidth(
                                               child: Container(
-                                                //  width: 94.w,
                                                 height: 40.h,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          32.r),
+                                                  BorderRadius.circular(
+                                                      32.r),
                                                   color: VoidColors.blackColor
                                                       .withOpacity(0.2),
                                                   border: Border.all(
@@ -256,10 +265,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                                   child: Center(
                                                     child: Row(
                                                       mainAxisSize:
-                                                          MainAxisSize.min,
+                                                      MainAxisSize.min,
                                                       mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
+                                                      MainAxisAlignment
+                                                          .spaceEvenly,
                                                       children: [
                                                         SizedBox(
                                                           height: 16.h,
@@ -270,7 +279,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           ),
                                                         ),
                                                         SizedBox(
-                                                          width: 3..w,
+                                                          width: 3.w,
                                                         ),
                                                         Text(
                                                           '$distance km',
@@ -278,7 +287,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               .poppins(
                                                             fontSize: 16.sp,
                                                             fontWeight:
-                                                                FontWeight.w500,
+                                                            FontWeight.w500,
                                                             color: VoidColors
                                                                 .whiteColor,
                                                           ),
@@ -297,13 +306,13 @@ class _SearchScreenState extends State<SearchScreen> {
                                               children: [
                                                 Align(
                                                   alignment:
-                                                      Alignment.bottomCenter,
+                                                  Alignment.bottomCenter,
                                                   child: IntrinsicWidth(
                                                     child: Container(
                                                       decoration: BoxDecoration(
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(12.r),
+                                                        BorderRadius
+                                                            .circular(12.r),
                                                         color: VoidColors
                                                             .whiteColor
                                                             .withOpacity(0.2),
@@ -312,71 +321,80 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         children: [
                                                           Padding(
                                                             padding:
-                                                                EdgeInsets.all(
-                                                                    8.h),
+                                                            EdgeInsets.all(
+                                                                8.h),
                                                             child: Column(
                                                               children: [
                                                                 Row(
                                                                   children: [
-                                                                    Text(
-                                                                      user.name,
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                        fontWeight:
-                                                                            FontWeight.w700,
-                                                                        fontSize:
-                                                                            21.sp,
-                                                                        color: VoidColors
-                                                                            .whiteColor,
+                                                                    // User Name with Flexibility
+                                                                    Flexible(
+                                                                      flex: 2, // Adjust the flex to allow more space to the name if needed
+                                                                      child: Text(
+                                                                        user.name,
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontWeight: FontWeight.w700,
+                                                                          fontSize: 21.sp,
+                                                                          color: VoidColors.whiteColor,
+                                                                        ),
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        maxLines: 1,
+                                                                        softWrap: false,
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                        width: 5
-                                                                            .w),
-                                                                    Text(
-                                                                      user.id
-                                                                          .toString(),
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        fontSize:
-                                                                            21.sp,
-                                                                        color: VoidColors
-                                                                            .whiteColor,
+                                                                    SizedBox(width: 5.w),
+
+                                                                    // User ID
+                                                                    Flexible(
+                                                                      flex: 2, // Adjust the flex to allocate appropriate space to the ID
+                                                                      child: Text(
+                                                                        user.id.toString(),
+                                                                        style: GoogleFonts.poppins(
+                                                                          fontWeight: FontWeight.w400,
+                                                                          fontSize: 21.sp,
+                                                                          color: VoidColors.whiteColor,
+                                                                        ),
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                        maxLines: 1,
+                                                                        softWrap: false,
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                        width: 5
-                                                                            .w),
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                      "assets/icons/var.svg",
-                                                                      height:
-                                                                          16.h,
-                                                                      width:
-                                                                          16.w,
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width: 5
-                                                                            .w),
-                                                                    Text(
-                                                                      userController.verified.value == null ||
-                                                                              userController.verified.value == false
-                                                                          ? "Not Verified"
-                                                                          : "Id Verified",
-                                                                      style: GoogleFonts
-                                                                          .poppins(
-                                                                        fontWeight:
-                                                                            FontWeight.w400,
-                                                                        fontSize:
-                                                                            10.sp,
-                                                                        color: VoidColors
-                                                                            .whiteColor,
+                                                                    SizedBox(width: 5.w),
+
+                                                                    // Verification Icon and Text
+                                                                    Flexible(
+                                                                      flex: 2, // Adjust the flex to give more space to the verification section
+                                                                      child: Row(
+                                                                        children: [
+                                                                          SvgPicture.asset(
+                                                                            "assets/icons/var.svg",
+                                                                            height: 16.h,
+                                                                            width: 16.w,
+                                                                          ),
+                                                                          SizedBox(width: 5.w),
+                                                                          Flexible(
+                                                                            child: Text(
+                                                                              userController.verified.value == null ||
+                                                                                  userController.verified.value == false
+                                                                                  ? "Not Verified"
+                                                                                  : "Id Verified",
+                                                                              style: GoogleFonts.poppins(
+                                                                                fontWeight: FontWeight.w400,
+                                                                                fontSize: 10.sp,
+                                                                                color: VoidColors.whiteColor,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              maxLines: 1,
+                                                                              softWrap: false,
+                                                                            ),
+                                                                          ),
+                                                                        ],
                                                                       ),
                                                                     ),
                                                                   ],
                                                                 ),
+
+
                                                                 Row(
                                                                   children: [
                                                                     Obx(() {
@@ -385,11 +403,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                                                           .value) {
                                                                         return Center(
                                                                           child:
-                                                                              CircularProgressIndicator(
+                                                                          CircularProgressIndicator(
                                                                             color:
-                                                                                VoidColors.secondary,
+                                                                            VoidColors.secondary,
                                                                             strokeWidth:
-                                                                                2,
+                                                                            2,
                                                                           ),
                                                                         );
                                                                       }
@@ -398,11 +416,11 @@ class _SearchScreenState extends State<SearchScreen> {
                                                                         style: GoogleFonts
                                                                             .poppins(
                                                                           fontWeight:
-                                                                              FontWeight.w400,
+                                                                          FontWeight.w400,
                                                                           fontSize:
-                                                                              12.sp,
+                                                                          12.sp,
                                                                           color:
-                                                                              VoidColors.whiteColor,
+                                                                          VoidColors.whiteColor,
                                                                         ),
                                                                       );
                                                                     }),
@@ -415,25 +433,25 @@ class _SearchScreenState extends State<SearchScreen> {
                                                                             .asset(
                                                                           "assets/icons/coin1.svg",
                                                                           height:
-                                                                              16.h,
+                                                                          16.h,
                                                                           width:
-                                                                              16.w,
+                                                                          16.w,
                                                                         ),
                                                                         SizedBox(
                                                                             width:
-                                                                                5.w),
+                                                                            5.w),
                                                                         Text(
                                                                           userController.coins.value == null || userController.verified.value == 0
                                                                               ? '0'
                                                                               : userController.coins.value.toString(), // user.coins,
                                                                           style:
-                                                                              GoogleFonts.poppins(
+                                                                          GoogleFonts.poppins(
                                                                             fontWeight:
-                                                                                FontWeight.w700,
+                                                                            FontWeight.w700,
                                                                             fontSize:
-                                                                                14.sp,
+                                                                            14.sp,
                                                                             color:
-                                                                                VoidColors.whiteColor,
+                                                                            VoidColors.whiteColor,
                                                                           ),
                                                                         ),
                                                                       ],
@@ -447,25 +465,25 @@ class _SearchScreenState extends State<SearchScreen> {
                                                             right: 1,
                                                             child: Padding(
                                                               padding:
-                                                                  const EdgeInsets
-                                                                      .only(
-                                                                      left: 0),
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 0),
                                                               child: Obx(() {
                                                                 return Container(
                                                                   height: 14.h,
                                                                   width: 14.w,
                                                                   decoration:
-                                                                      BoxDecoration(
+                                                                  BoxDecoration(
                                                                     shape: BoxShape
                                                                         .circle,
                                                                     color: userController.status.value ==
-                                                                                null ||
-                                                                            userController.status.value ==
-                                                                                false
+                                                                        null ||
+                                                                        userController.status.value ==
+                                                                            false
                                                                         ? VoidColors
-                                                                            .grey2
+                                                                        .grey2
                                                                         : VoidColors
-                                                                            .green,
+                                                                        .green,
                                                                   ),
                                                                 );
                                                               }),
@@ -485,12 +503,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                               decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.only(
                                                   topLeft:
-                                                      Radius.circular(40.r),
+                                                  Radius.circular(40.r),
                                                   topRight:
-                                                      Radius.circular(40.r),
+                                                  Radius.circular(40.r),
                                                 ),
                                                 color:
-                                                    VoidColors.bottomNavColor,
+                                                VoidColors.bottomNavColor,
                                                 boxShadow: [
                                                   BoxShadow(
                                                     color: Colors.black
@@ -507,15 +525,15 @@ class _SearchScreenState extends State<SearchScreen> {
                                                     vertical: 20.h),
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
                                                       "Music genre:",
                                                       style:
-                                                          GoogleFonts.manrope(
+                                                      GoogleFonts.manrope(
                                                         fontSize: 16.sp,
                                                         fontWeight:
-                                                            FontWeight.w600,
+                                                        FontWeight.w600,
                                                         color: VoidColors.grey2,
                                                       ),
                                                     ),
@@ -525,44 +543,44 @@ class _SearchScreenState extends State<SearchScreen> {
                                                       runSpacing: 10.h,
                                                       children: List.generate(
                                                           user.interests.length,
-                                                          (index) {
-                                                        return Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
+                                                              (index) {
+                                                            return Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
                                                                   horizontal:
-                                                                      10.w,
+                                                                  10.w,
                                                                   vertical:
-                                                                      5.5.h),
-                                                          height: 28.h,
-                                                          decoration:
+                                                                  5.5.h),
+                                                              height: 28.h,
+                                                              decoration:
                                                               BoxDecoration(
-                                                            borderRadius:
+                                                                borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        50.r),
-                                                            color: VoidColors
-                                                                .whiteColor,
-                                                            border: Border.all(
-                                                              color: VoidColors
-                                                                  .lightGrey,
-                                                              width: 2,
-                                                            ),
-                                                          ),
-                                                          child: Text(
-                                                            user.interests[
+                                                                    50.r),
+                                                                color: VoidColors
+                                                                    .whiteColor,
+                                                                border: Border.all(
+                                                                  color: VoidColors
+                                                                      .lightGrey,
+                                                                  width: 2,
+                                                                ),
+                                                              ),
+                                                              child: Text(
+                                                                user.interests[
                                                                 index],
-                                                            style: GoogleFonts
-                                                                .poppins(
-                                                              fontSize: 10.sp,
-                                                              fontWeight:
+                                                                style: GoogleFonts
+                                                                    .poppins(
+                                                                  fontSize: 10.sp,
+                                                                  fontWeight:
                                                                   FontWeight
                                                                       .w400,
-                                                              color: VoidColors
-                                                                  .blackColor,
-                                                            ),
-                                                          ),
-                                                        );
-                                                      }),
+                                                                  color: VoidColors
+                                                                      .blackColor,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          }),
                                                     ),
                                                   ],
                                                 ),
@@ -575,16 +593,16 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 width: 158.w,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                      BorderRadius.circular(
-                                                          100.r),
+                                                  BorderRadius.circular(
+                                                      100.r),
                                                   color: VoidColors.grey2
                                                       .withOpacity(0.2),
                                                 ),
                                                 child: Obx(() {
                                                   return Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    MainAxisAlignment
+                                                        .center,
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () {
@@ -598,24 +616,24 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               'imgPath': user
                                                                   .profilePicture,
                                                               'coins':
-                                                                  user.coins ??
-                                                                      0,
+                                                              user.coins ??
+                                                                  0,
                                                               "coinIcon":
-                                                                  "assets/icons/coin.png",
+                                                              "assets/icons/coin.png",
                                                               'chatModel':
-                                                                  ChatModel(
+                                                              ChatModel(
                                                                 receiverId:
-                                                                    user.id,
+                                                                user.id,
                                                                 messages: [],
                                                                 userDetails:
-                                                                    UserDetails(
+                                                                UserDetails(
                                                                   coins:
-                                                                      user.coins ??
-                                                                          0,
+                                                                  user.coins ??
+                                                                      0,
                                                                   profilePicture:
-                                                                      user.profilePicture,
+                                                                  user.profilePicture,
                                                                   name:
-                                                                      user.name,
+                                                                  user.name,
                                                                 ),
                                                               ),
                                                             },
@@ -625,16 +643,16 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           height: 56.h,
                                                           width: 56.w,
                                                           decoration:
-                                                              BoxDecoration(
+                                                          BoxDecoration(
                                                             shape:
-                                                                BoxShape.circle,
+                                                            BoxShape.circle,
                                                             color: searchScreenController
-                                                                    .isChat
-                                                                    .value
+                                                                .isChat
+                                                                .value
                                                                 ? VoidColors
-                                                                    .secondary
+                                                                .secondary
                                                                 : VoidColors
-                                                                    .whiteColor,
+                                                                .whiteColor,
                                                           ),
                                                           child: Center(
                                                             child: SvgPicture
@@ -644,12 +662,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               width: 30.w,
                                                               colorFilter: ColorFilter.mode(
                                                                   searchScreenController
-                                                                          .isChat
-                                                                          .value
+                                                                      .isChat
+                                                                      .value
                                                                       ? VoidColors
-                                                                          .whiteColor
+                                                                      .whiteColor
                                                                       : VoidColors
-                                                                          .secondary,
+                                                                      .secondary,
                                                                   BlendMode
                                                                       .srcIn),
                                                             ),
@@ -668,16 +686,16 @@ class _SearchScreenState extends State<SearchScreen> {
                                                           height: 56.h,
                                                           width: 56.w,
                                                           decoration:
-                                                              BoxDecoration(
+                                                          BoxDecoration(
                                                             shape:
-                                                                BoxShape.circle,
+                                                            BoxShape.circle,
                                                             color: searchScreenController
-                                                                    .isChat
-                                                                    .value
+                                                                .isChat
+                                                                .value
                                                                 ? VoidColors
-                                                                    .whiteColor
+                                                                .whiteColor
                                                                 : VoidColors
-                                                                    .secondary,
+                                                                .secondary,
                                                           ),
                                                           child: Center(
                                                             child: SvgPicture
@@ -687,12 +705,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                                               width: 30.w,
                                                               colorFilter: ColorFilter.mode(
                                                                   searchScreenController
-                                                                          .isChat
-                                                                          .value
+                                                                      .isChat
+                                                                      .value
                                                                       ? VoidColors
-                                                                          .secondary
+                                                                      .secondary
                                                                       : VoidColors
-                                                                          .whiteColor,
+                                                                      .whiteColor,
                                                                   BlendMode
                                                                       .srcIn),
                                                             ),
