@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scratch_project/app/utils/constants.dart';
-import 'package:scratch_project/app/utils/constraints/colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../controllers/jamming_screen_controller.dart';
+import 'package:scratch_project/app/utils/constraints/colors.dart';
 
 class JammingScreenView extends StatelessWidget {
   JammingScreenView({Key? key}) : super(key: key);
@@ -86,235 +86,282 @@ class JammingScreenView extends StatelessWidget {
         },
         child: Obx(
               () => controller.isLoading.value
-              ? Center(
-            child: CircularProgressIndicator(
-              color: VoidColors.whiteColor,
-            ),
-          )
-              : SingleChildScrollView(
+              ? buildShimmerLoading()
+              : buildContent(),
+        ),
+      ),
+    );
+  }
+
+  Widget buildShimmerLoading() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.h),
             child: Container(
               width: double.infinity,
+              height: 282.h,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [VoidColors.primary, VoidColors.secondary],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 24.w),
+            child: Container(
+              width: 160.w,
+              height: 46.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10.r),
+              ),
+            ),
+          ),
+          SizedBox(height: 20.h),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: 5,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 24.w),
+                child: Container(
+                  height: 80.h,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildContent() {
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [VoidColors.primary, VoidColors.secondary],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Container(
+                width: double.infinity,
+                height: 282.h,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.r),
+                  child: Obx(
+                        () {
+                      if (controller.filteredTracks.isEmpty) {
+                        return Image.asset(
+                          "assets/images/placeholder.jpg",
+                          fit: BoxFit.cover,
+                        );
+                      }
+
+                      final imageUrl =
+                      controller.selectedSongIndex.value == -1
+                          ? controller.filteredTracks[0]['images'][0]
+                      ['url'] ??
+                          'assets/images/placeholder.jpg'
+                          : controller.filteredTracks[
+                      controller.selectedSongIndex.value]
+                      ['images'][0]['url'] ??
+                          'assets/images/placeholder.jpg';
+
+                      return Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/images/placeholder.jpg',
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
-              child: Column(
+            ),
+            SizedBox(height: 20.h),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 24.w),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: Container(
-                      width: double.infinity,
-                      height: 282.h,
+                  Obx(
+                        () => Container(
+                      width: 160.w,
+                      height: 46.h,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10.r),
+                        color: VoidColors.lightTransparent.withOpacity(0.3),
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.r),
-                        child: Obx(
-                              () {
-                            // Ensure there are tracks to avoid index errors
-                            if (controller.filteredTracks.isEmpty) {
-                              return Image.asset(
-                                "assets/images/placeholder.jpg",
-                                fit: BoxFit.cover,
-                              );
-                            }
-
-                            final imageUrl = controller.selectedSongIndex.value == -1
-                                ? controller.filteredTracks[0]['images'][0]['url'] ?? 'assets/images/placeholder.jpg'
-                                : controller.filteredTracks[controller.selectedSongIndex.value]['images'][0]['url'] ?? 'assets/images/placeholder.jpg';
-
-                            return Image.network(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/placeholder.jpg',
-                                  fit: BoxFit.cover,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Obx(
-                              () => Container(
-                            width: 160.w,
-                            height: 46.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10.r),
-                              color: VoidColors.lightTransparent
-                                  .withOpacity(0.3),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 7.w),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            value: controller.selectedCategory.value.isEmpty
+                                ? controller.categories[0]
+                                : controller.selectedCategory.value,
+                            icon: Padding(
+                              padding: EdgeInsets.only(left: 5.w),
+                              child: SvgPicture.asset(
+                                "assets/icons/dropdoen.svg",
+                                width: 9.28.w,
+                                height: 7.13.h,
+                                colorFilter: ColorFilter.mode(
+                                    VoidColors.whiteColor, BlendMode.srcIn),
+                              ),
                             ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 7.w),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  isExpanded: true,
-                                  value: controller.selectedCategory.value.isEmpty
-                                      ? controller.categories[0]
-                                      : controller.selectedCategory.value,
-                                  icon: Padding(
-                                    padding: EdgeInsets.only(left: 5.w),
-                                    child: SvgPicture.asset(
-                                      "assets/icons/dropdoen.svg",
-                                      width: 9.28.w,
-                                      height: 7.13.h,
-                                      colorFilter: ColorFilter.mode(
-                                          VoidColors.whiteColor,
-                                          BlendMode.srcIn),
-                                    ),
+                            iconSize: 24.sp,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.black),
+                            dropdownColor: VoidColors.primary,
+                            onChanged: (String? newValue) {
+                              controller.setSelectedCategoryIndex(
+                                  controller.categories.indexOf(newValue!));
+                            },
+                            items: controller.categories
+                                .map<DropdownMenuItem<String>>((value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14.sp,
+                                    color: VoidColors.whiteColor,
                                   ),
-                                  iconSize: 24.sp,
-                                  elevation: 16,
-                                  style: TextStyle(color: Colors.black),
-                                  dropdownColor: VoidColors.primary,
-                                  onChanged: (String? newValue) {
-                                    controller.setSelectedCategoryIndex(
-                                        controller.categories.indexOf(newValue!));
-                                  },
-                                  items: controller.categories
-                                      .map<DropdownMenuItem<String>>((value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        style: GoogleFonts.poppins(
-                                          fontSize: 14.sp,
-                                          color: VoidColors.whiteColor,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    );
-                                  }).toList(),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                              ),
-                            ),
+                              );
+                            }).toList(),
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20.h),
-                  Obx(
-                        () => controller.filteredTracks.isEmpty
-                        ? Text(
-                      "No playlist found",
-                      style: GoogleFonts.poppins(
-                        fontSize: 14.sp,
-                        color: VoidColors.whiteColor,
                       ),
-                    )
-                        : ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: controller.filteredTracks.length,
-                      itemBuilder: (context, index) {
-                        final playlist = controller.filteredTracks[index];
-                        return GestureDetector(
-                          onTap: () {
-                            controller.setSelectedSongIndex(index);
-                            controller.setSelectedSong(playlist['name']);
-                            controller.openSpotifyTrack(playlist['uri']);
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 5.h),
-                            decoration: BoxDecoration(
-                              color: controller.selectedSongIndex.value ==
-                                  index
-                                  ? VoidColors.whiteColor.withOpacity(0.08)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 15.h, horizontal: 10.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Image.network(
-                                        playlist['images'][0]['url'] ??
-                                            'assets/images/placeholder.jpg',
-                                        height: 21.h,
-                                        width: 23.w,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Image.asset(
-                                            'assets/images/placeholder.jpg',
-                                            height: 21.h,
-                                            width: 23.w,
-                                          );
-                                        },
-                                      ),
-                                      SizedBox(width: 13.w),
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 200.w,
-                                            child: Text(
-                                              playlist['name'],
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 12.sp,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                                color: VoidColors
-                                                    .blackColor,
-                                              ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8.h),
-                                          SizedBox(
-                                            width: 200.w,
-                                            child: Text(
-                                              playlist[
-                                              'description'] ??
-                                                  '',
-                                              style: GoogleFonts.roboto(
-                                                fontSize: 10.sp,
-                                                fontWeight:
-                                                FontWeight.w400,
-                                                color: VoidColors
-                                                    .blackColor,
-                                              ),
-                                              overflow: TextOverflow
-                                                  .ellipsis,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
                     ),
                   ),
                 ],
               ),
             ),
-          ),
+            SizedBox(height: 20.h),
+            Obx(
+                  () => controller.filteredTracks.isEmpty
+                  ? Text(
+                "No playlist found",
+                style: GoogleFonts.poppins(
+                  fontSize: 14.sp,
+                  color: VoidColors.whiteColor,
+                ),
+              )
+                  : ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: controller.filteredTracks.length,
+                itemBuilder: (context, index) {
+                  final playlist = controller.filteredTracks[index];
+                  return GestureDetector(
+                    onTap: () {
+                      controller.setSelectedSongIndex(index);
+                      controller.setSelectedSong(playlist['name']);
+                      controller.openSpotifyTrack(playlist['uri']);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 5.h),
+                      decoration: BoxDecoration(
+                        color: controller.selectedSongIndex.value == index
+                            ? VoidColors.whiteColor.withOpacity(0.08)
+                            : Colors.transparent,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 15.h, horizontal: 10.w),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                  playlist['images'][0]['url'] ??
+                                      'assets/images/placeholder.jpg',
+                                  height: 21.h,
+                                  width: 23.w,
+                                  errorBuilder:
+                                      (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/images/placeholder.jpg',
+                                      height: 21.h,
+                                      width: 23.w,
+                                    );
+                                  },
+                                ),
+                                SizedBox(width: 13.w),
+                                Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      width: 200.w,
+                                      child: Text(
+                                        playlist['name'],
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: VoidColors.blackColor,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    SizedBox(height: 8.h),
+                                    SizedBox(
+                                      width: 200.w,
+                                      child: Text(
+                                        playlist['description'] ?? '',
+                                        style: GoogleFonts.roboto(
+                                          fontSize: 10.sp,
+                                          fontWeight: FontWeight.w400,
+                                          color: VoidColors.blackColor,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
