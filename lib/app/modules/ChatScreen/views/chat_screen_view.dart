@@ -13,12 +13,11 @@ class ChatScreenView extends GetView<ChatScreenController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:VoidColors.secondary ,
+      backgroundColor: VoidColors.secondary,
       appBar: controller.hasMessages ? _buildChatAppBar() : _buildNoMessagesAppBar(),
-      body:
-       controller.hasMessages ?
-        _buildChatBody() : 
-        _buildNoMessagesBody(),
+      body: controller.hasMessages
+          ? _buildChatBody()
+          : _buildNoMessagesBody(),
     );
   }
 
@@ -42,7 +41,6 @@ class ChatScreenView extends GetView<ChatScreenController> {
           fontSize: 16,
           fontWeight: FontWeight.w600,
         ),
-
       ),
       actions: [
         IconButton(
@@ -105,8 +103,6 @@ class ChatScreenView extends GetView<ChatScreenController> {
         ),
       ),
     );
- 
- 
   }
 
   // Body for when there are no messages
@@ -115,6 +111,12 @@ class ChatScreenView extends GetView<ChatScreenController> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Image.asset(
+            'assets/images/no_chat.png', // Replace with the correct path to your image
+            height: 150.h,
+            width: 150.h,
+          ),
+          SizedBox(height: 24.h),
           Text(
             'No Messages right now',
             style: GoogleFonts.poppins(
@@ -122,7 +124,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
               fontWeight: FontWeight.normal,
             ),
           ),
-          SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Check back later',
             style: GoogleFonts.poppins(
@@ -131,7 +133,7 @@ class ChatScreenView extends GetView<ChatScreenController> {
           ),
           SizedBox(
             height: 150.h,
-          )
+          ),
         ],
       ),
     );
@@ -172,23 +174,22 @@ class ChatScreenView extends GetView<ChatScreenController> {
             ),
           ),
           Expanded(
-            child: Obx(()=>ListView.builder(
-                padding: EdgeInsets.all(12.h),
-                itemCount: controller.chatModels.length, // Placeholder item count
-                itemBuilder: (context, index) {
-                  var chatModel = controller.chatModels[index];
-                  return ChatListItem(
-                    imageUrl: chatModel.userDetails!.profilePicture??"", // Placeholder image
-                    name: chatModel.userDetails?.name??"UserName",
-                    lastMessage: chatModel.messages?.last.content.toString()??"",
-                    time: '11:20am',
-                    coinIcon: 'assets/icons/coin.png',
-                    coins: chatModel.userDetails?.coins??0,
-                    chatModel: chatModel,
-                  );
-                },
-              ),
-            ),
+            child: Obx(() => ListView.builder(
+              padding: EdgeInsets.all(12.h),
+              itemCount: controller.chatModels.length, // Placeholder item count
+              itemBuilder: (context, index) {
+                var chatModel = controller.chatModels[index];
+                return ChatListItem(
+                  imageUrl: chatModel.userDetails!.profilePicture ?? "", // Placeholder image
+                  name: chatModel.userDetails?.name ?? "UserName",
+                  lastMessage: chatModel.messages?.last.content.toString() ?? "",
+                  time: '11:20am',
+                  coinIcon: 'assets/icons/coin.png',
+                  coins: chatModel.userDetails?.coins ?? 0,
+                  chatModel: chatModel,
+                );
+              },
+            )),
           ),
         ],
       ),

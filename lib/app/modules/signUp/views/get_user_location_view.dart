@@ -9,13 +9,6 @@ import 'package:scratch_project/app/utils/constraints/text_strings.dart';
 import 'package:scratch_project/app/widgets/custom_button.dart';
 import '../controllers/sign_up_controller.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-import '../controllers/sign_up_controller.dart';
-
 class GetUserLocationView extends StatefulWidget {
   const GetUserLocationView({super.key});
 
@@ -74,24 +67,27 @@ class _GetUserLocationViewState extends State<GetUserLocationView> {
           SizedBox(height: 150.0.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-            child: 
-            signUpController.loading.value
-                    ? CustomButtonWithLoader(
-                        
-                        borderRadius: 24.r,
-                      )
-                    : 
-            CustomButton(
-              text: 'Next',
-              onPressed: () async {
-                try {
-                  await signUpController.getCurrentLocation();
-                  await signUpController.signUp();
-                } catch (e) {
-                  Get.snackbar('Error', e.toString());
-                }
-              },
-              borderRadius: 24.r,
+            child: Obx(
+                  () => signUpController.loading.value
+                  ? CircularProgressIndicator(
+                color: VoidColors.secondary,
+              )
+                  : CustomButton(
+                text: 'Next',
+                onPressed: () async {
+                  signUpController.loading.value = true;
+                  try {
+                    await signUpController.getCurrentLocation();
+                    await signUpController.signUp();
+                    Get.offAllNamed(Routes.SIGN_IN);
+                  } catch (e) {
+                    Get.snackbar('Error', e.toString());
+                  } finally {
+                    signUpController.loading.value = false;
+                  }
+                },
+                borderRadius: 24.r,
+              ),
             ),
           ),
           SizedBox(height: 20.0.h),

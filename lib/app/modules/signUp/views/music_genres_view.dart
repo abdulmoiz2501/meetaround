@@ -110,7 +110,7 @@ class _MusicGenresViewState extends State<MusicGenresView> {
         snackPosition: SnackPosition.BOTTOM):
                 Get.toNamed(Routes.ADD_PICTURE);
               },
-              borderRadius: 12.0.r,
+              borderRadius: 28.0.r,
               textColor: VoidColors.whiteColor,
             ),
           ),

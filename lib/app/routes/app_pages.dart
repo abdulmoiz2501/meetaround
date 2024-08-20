@@ -5,6 +5,7 @@ import '../modules/ChatDetailScreen/views/chat_detail_screen_view.dart';
 import '../modules/ChatScreen/bindings/chat_screen_binding.dart';
 import '../modules/ChatScreen/views/chat_screen_view.dart';
 import '../modules/JammingScreen/bindings/jamming_screen_binding.dart';
+import '../modules/JammingScreen/controllers/jamming_screen_controller.dart';
 import '../modules/JammingScreen/views/jamming_screen_view.dart';
 import '../modules/NotificationScreen/bindings/notification_screen_binding.dart';
 import '../modules/NotificationScreen/views/notification_screen_view.dart';
@@ -142,8 +143,12 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.JAMMING_SCREEN,
-      page: () => JammingScreenView(),
-      binding: JammingScreenBinding(),
+      page: () => JammingScreenView(userId: Get.arguments['userId'], targetUserId: Get.arguments['targetUserId'],),
+      binding: BindingsBuilder(() {
+        Get.lazyPut<JammingScreenController>(() {
+          return JammingScreenController(userId: Get.arguments['userId'], targetUserId: Get.arguments['targetUserId']);
+        });
+      }),
     ),
     GetPage(
       name: _Paths.PAST_INTERECTIONS,

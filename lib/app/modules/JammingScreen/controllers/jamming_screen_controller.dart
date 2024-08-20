@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../../SearchScreen/controllers/search_screen_controller.dart';
 
 class JammingScreenController extends GetxController {
   var selectedCategory = ''.obs;
@@ -16,11 +18,172 @@ class JammingScreenController extends GetxController {
   var categories = [].obs;
   var filteredTracks = [].obs;
 
+  late WebSocketChannel channel;
+  final int userId;
+   int? targetUserId;
+
+  // Constructor
+  JammingScreenController({required this.userId,  this.targetUserId})
+  {
+    print("JammingScreenController initialized with userId:$userId and targetUserId: $targetUserId");
+}/* final int userId;
+
+  final int targetUserId;
+
+  //JammingScreenController(this.targetUserId, {required this.userId});
+  JammingScreenController(this.userId, this.targetUserId);*/
+
   @override
   void onInit() {
     super.onInit();
     fetchSpotifyTracks();
   }
+
+  @override
+  void onClose() {
+    channel.sink.close();
+    super.onClose();
+  }
+
+  // New method to initialize WebSocket from an external source
+  void initializeWebSocket(WebSocketChannel webSocketChannel) {
+    print('Initializing WebSocket connection...');
+    channel = webSocketChannel;
+
+    // print("targetUserId: $this.userId");
+    channel.sink.add(jsonEncode({
+      "type": "init",
+      "userId": userId,
+    }));
+
+    channel.stream.listen((message) {
+      handleWebSocketMessage(message);
+    }, onError: (error) {
+      print('WebSocket Error: $error');
+    });
+  }
+
+  void handleWebSocketMessage(String message) {
+    try {
+      if (_isJson(message)) {
+        print('Received JSON message/////////////////////////: $message');
+        var data = jsonDecode(message);
+        _processJsonData(data);
+      } else {
+        var jsonData = _convertStringToJson(message);
+        if (jsonData != null) {
+          _processJsonData(jsonData);
+        } else {
+          print('Received non-JSON message: $message');
+        }
+      }
+    } catch (e) {
+      print('Error parsing WebSocket message: $e');
+    }
+  }
+
+  void _processJsonData(Map<String, dynamic> data) {
+    print('Processing JSON data: $data');
+    print("targetUserId: $targetUserId");
+    switch (data['type']) {
+      case 'init':
+        print('Initialization message received: ${data['message']}');
+        break;
+      case 'request':
+        print('Jamming request received from user ${data['userId']}');
+        print("targetUserId: ${data["targetUserId"]}"); //21
+        print("userId: ${data["userId"]}"); //7
+        if (data["targetUserId"] != null) {
+          int targetUserId = int.parse(data["targetUserId"].toString());
+          _showJammingRequestDialog(targetUserId);
+        } else {
+          print("Error: targetUserId is null");
+        }
+
+
+        break;
+      case 'response':
+        print('Jamming response received: ${data['action']}');
+        if (data['action'] == 'accept') {
+          Get.snackbar("Accepted", "Jamming session accepted by user ${data['userId']}. Starting session...");
+        } else {
+          Get.snackbar("Rejected", "Jamming session rejected by user ${data['userId']}.");
+        }
+        break;
+      case 'url':
+        print('Song URL received: ${data['songUrl']}');
+        // Play the song or handle it accordingly
+        break;
+      default:
+        print('Unknown message type');
+    }
+  }
+
+  void _showJammingRequestDialog(int requestingUserId) {
+    Get.find<SearchScreenController>().showJammingRequestDialog(requestingUserId);
+  }
+
+  bool _isJson(String str) {
+    try {
+      jsonDecode(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  Map<String, dynamic>? _convertStringToJson(String str) {
+    try {
+      if (str.contains(":")) {
+        var parts = str.split(":");
+        return {"type": "info", "message": str.trim()};
+      }
+    } catch (e) {
+      print('Error converting string to JSON: $e');
+    }
+    return null;
+  }
+
+  void sendJammingRequest(int targetUserId) {
+    channel.sink.add(jsonEncode({
+      "type": "request",
+      "userId": userId,
+      "targetUserId": targetUserId,
+    }));
+  }
+
+  void sendJammingResponse(int targetUserId, String action) {
+    print('Sending jamming response: $action');
+    channel.sink.add(jsonEncode({
+      "type": "response",
+      "userId": userId,
+      "targetUserId": targetUserId,
+      "action": action,
+    }));
+    print("///////");
+    print("targetUserId: $targetUserId");
+    print("userId: $userId");
+    print("action: $action");
+    print("channel: $channel");
+    print("channel.sink: ${channel.sink}");
+    print("channel.stream: ${channel.stream}");
+
+  }
+
+  void sendSongUrl(int targetUserId, String songUrl, int? songDuration) {
+    final message = {
+      "type": "url",
+      "userId": userId,
+      "targetUserId": targetUserId,
+      "songUrl": songUrl,
+      "songDuration": songDuration ?? 0,
+    };
+
+    channel.sink.add(jsonEncode(message));
+    print("Song URL sent: $songUrl");
+    //print();
+  }
+
 
   void toggleSearch() {
     isSearching.value = !isSearching.value;
@@ -52,21 +215,15 @@ class JammingScreenController extends GetxController {
               'name': track['name'],
               'uri': track['url'],
               'images': [{'url': track['image']}],
-              'artist': '', // Artist information is not in the response, so leaving it empty
-              'album': '',  // Album information is not in the response, so leaving it empty
             };
           }).toList());
-
-          print("Filtered tracks count: ${filteredTracks.length}");
         } else {
           Get.snackbar("Error", "Failed to load search results. Status code: ${response.statusCode}");
-          print('Failed to load search results. Status code: ${response.statusCode}');
         }
       } catch (e) {
         Get.snackbar("Error", "An error occurred while searching: $e");
-        print(e);
       } finally {
-        isLoading.value = false; // Hide loading indicator after search
+        isLoading.value = false;
       }
     }
   }
@@ -94,9 +251,6 @@ class JammingScreenController extends GetxController {
     final Uri spotifyWebUrl = Uri.parse(spotifyUri);
     final Uri playStoreUrl = Uri.parse("https://play.google.com/store/apps/details?id=com.spotify.music");
 
-    print("Spotify URI: $spotifyUri");
-    print("Spotify web URL: $spotifyWebUrl");
-
     try {
       await launchUrl(
         spotifyWebUrl,
@@ -104,11 +258,12 @@ class JammingScreenController extends GetxController {
       );
     } catch (e) {
       Get.snackbar("Error", "An error occurred while launching: $e");
-      print(e);
     }
   }
 
   Future<void> fetchSpotifyTracks() async {
+    print("The user id that send request is: $userId");
+    print("The target user id is: $targetUserId");
     try {
       isLoading.value = true;
       final response = await http.get(
@@ -133,20 +288,15 @@ class JammingScreenController extends GetxController {
           }
         }
 
-        // Set default category and playlists
         if (categories.isNotEmpty) {
           selectedCategory.value = categories[0];
           filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
         }
-
-        print('Number of categories fetched: ${categories.length}');
       } else {
         Get.snackbar("Error", "Failed to load tracks from Spotify. Status code: ${response.statusCode}");
-        print('Failed to load tracks from Spotify. Status code: ${response.statusCode}');
       }
     } catch (e) {
       Get.snackbar("Error", "An error occurred while fetching tracks: $e");
-      print(e);
     } finally {
       isLoading.value = false;
     }

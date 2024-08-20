@@ -9,12 +9,27 @@ import '../controllers/jamming_screen_controller.dart';
 import 'package:scratch_project/app/utils/constraints/colors.dart';
 
 class JammingScreenView extends StatelessWidget {
-  JammingScreenView({Key? key}) : super(key: key);
+  final int userId;
+  final int targetUserId; // Add this to accept targetUserId
 
-  final JammingScreenController controller = Get.put(JammingScreenController());
+  JammingScreenView({Key? key, required this.userId, required this.targetUserId}) : super(key: key);
+
+  // Pass the userId when creating the controller instance
+  final JammingScreenController controller = Get.put(JammingScreenController
+    (
+      userId: Get.arguments['userId'],
+      targetUserId: Get.arguments['targetUserId'], 
+  ),
+  );
 
   @override
   Widget build(BuildContext context) {
+
+    // Use a post-frame callback to send the jamming request after the screen is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.sendJammingRequest(targetUserId); // Call the function with the targetUserId
+    });
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80.h,
@@ -177,10 +192,8 @@ class JammingScreenView extends StatelessWidget {
                         );
                       }
 
-                      final imageUrl =
-                      controller.selectedSongIndex.value == -1
-                          ? controller.filteredTracks[0]['images'][0]
-                      ['url'] ??
+                      final imageUrl = controller.selectedSongIndex.value == -1
+                          ? controller.filteredTracks[0]['images'][0]['url'] ??
                           'assets/images/placeholder.jpg'
                           : controller.filteredTracks[
                       controller.selectedSongIndex.value]
@@ -331,9 +344,11 @@ class JammingScreenView extends StatelessWidget {
                                         style: GoogleFonts.roboto(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: VoidColors.blackColor,
+                                          color:
+                                          VoidColors.blackColor,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
+                                        overflow:
+                                        TextOverflow.ellipsis,
                                       ),
                                     ),
                                     SizedBox(height: 8.h),
@@ -344,9 +359,11 @@ class JammingScreenView extends StatelessWidget {
                                         style: GoogleFonts.roboto(
                                           fontSize: 10.sp,
                                           fontWeight: FontWeight.w400,
-                                          color: VoidColors.blackColor,
+                                          color:
+                                          VoidColors.blackColor,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
+                                        overflow:
+                                        TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],

@@ -23,7 +23,7 @@ class _SplashScreenViewState extends State<SplashScreenView> {
 
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Get.offAll(()=>SecondSplashView());
     });
 
@@ -48,8 +48,8 @@ class _SplashScreenViewState extends State<SplashScreenView> {
               children: [
                 Expanded(
                   child: SizedBox(
-                    height: 313.h,
-                    width: 313.w,
+                    height: 270.h,
+                    width: 270.w,
                     child: Image.asset(VoidImages.splashLogo),
                   ),
                 ),

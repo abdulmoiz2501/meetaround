@@ -39,7 +39,7 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
               child: _pages[bottomNavBarController.selectedIndex.value]),
       ),
       bottomNavigationBar: Container(
-        height: 80.h,
+        height: 50.h,
         decoration: const BoxDecoration(
           color: VoidColors.bottomNavColor,
         ),
@@ -66,7 +66,7 @@ class BottomNavBarView extends GetView<BottomNavBarController> {
         controller.changeIndex(index);
       },
       child: Container(
-        width: 28.w,
+        width: 25.w,
         color: Colors.transparent,
         child: Column(
           children: [
