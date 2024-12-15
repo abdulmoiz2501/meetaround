@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
 import 'package:url_launcher/url_launcher.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../../SearchScreen/controllers/search_screen_controller.dart';
 
 class JammingScreenController extends GetxController {
   var selectedCategory = ''.obs;
@@ -12,15 +14,176 @@ class JammingScreenController extends GetxController {
   var isPlaying = false.obs;
   var isSearching = false.obs;
   var isLoading = true.obs;
-  var spotifyPlaylists = [].obs;
+  var spotifyTracks = [].obs;
   var categories = [].obs;
   var filteredTracks = [].obs;
+
+  late WebSocketChannel channel;
+  final int userId;
+   int? targetUserId;
+
+  // Constructor
+  JammingScreenController({required this.userId,  this.targetUserId})
+  {
+    print("JammingScreenController initialized with userId:$userId and targetUserId: $targetUserId");
+}/* final int userId;
+
+  final int targetUserId;
+
+  //JammingScreenController(this.targetUserId, {required this.userId});
+  JammingScreenController(this.userId, this.targetUserId);*/
 
   @override
   void onInit() {
     super.onInit();
-    fetchSpotifyCategoriesWithPlaylists();
+    fetchSpotifyTracks();
   }
+
+  @override
+  void onClose() {
+    channel.sink.close();
+    super.onClose();
+  }
+
+  // New method to initialize WebSocket from an external source
+  void initializeWebSocket(WebSocketChannel webSocketChannel) {
+    print('Initializing WebSocket connection...');
+    channel = webSocketChannel;
+
+    // print("targetUserId: $this.userId");
+    channel.sink.add(jsonEncode({
+      "type": "init",
+      "userId": userId,
+    }));
+
+    channel.stream.listen((message) {
+      handleWebSocketMessage(message);
+    }, onError: (error) {
+      print('WebSocket Error: $error');
+    });
+  }
+
+  void handleWebSocketMessage(String message) {
+    try {
+      if (_isJson(message)) {
+        print('Received JSON message/////////////////////////: $message');
+        var data = jsonDecode(message);
+        _processJsonData(data);
+      } else {
+        var jsonData = _convertStringToJson(message);
+        if (jsonData != null) {
+          _processJsonData(jsonData);
+        } else {
+          print('Received non-JSON message: $message');
+        }
+      }
+    } catch (e) {
+      print('Error parsing WebSocket message: $e');
+    }
+  }
+
+  void _processJsonData(Map<String, dynamic> data) {
+    print('Processing JSON data: $data');
+    print("targetUserId: $targetUserId");
+    switch (data['type']) {
+      case 'init':
+        print('Initialization message received: ${data['message']}');
+        break;
+      case 'request':
+        print('Jamming request received from user ${data['userId']}');
+        print("targetUserId: ${data["targetUserId"]}"); //21
+        print("userId: ${data["userId"]}"); //7
+        if (data["targetUserId"] != null) {
+          int targetUserId = int.parse(data["targetUserId"].toString());
+          _showJammingRequestDialog(targetUserId);
+        } else {
+          print("Error: targetUserId is null");
+        }
+
+
+        break;
+      case 'response':
+        print('Jamming response received: ${data['action']}');
+        if (data['action'] == 'accept') {
+          Get.snackbar("Accepted", "Jamming session accepted by user ${data['userId']}. Starting session...");
+        } else {
+          Get.snackbar("Rejected", "Jamming session rejected by user ${data['userId']}.");
+        }
+        break;
+      case 'url':
+        print('Song URL received: ${data['songUrl']}');
+        // Play the song or handle it accordingly
+        break;
+      default:
+        print('Unknown message type');
+    }
+  }
+
+  void _showJammingRequestDialog(int requestingUserId) {
+    Get.find<SearchScreenController>().showJammingRequestDialog(requestingUserId);
+  }
+
+  bool _isJson(String str) {
+    try {
+      jsonDecode(str);
+    } catch (e) {
+      return false;
+    }
+    return true;
+  }
+
+  Map<String, dynamic>? _convertStringToJson(String str) {
+    try {
+      if (str.contains(":")) {
+        var parts = str.split(":");
+        return {"type": "info", "message": str.trim()};
+      }
+    } catch (e) {
+      print('Error converting string to JSON: $e');
+    }
+    return null;
+  }
+
+  void sendJammingRequest(int targetUserId) {
+    channel.sink.add(jsonEncode({
+      "type": "request",
+      "userId": userId,
+      "targetUserId": targetUserId,
+    }));
+  }
+
+  void sendJammingResponse(int targetUserId, String action) {
+    print('Sending jamming response: $action');
+    channel.sink.add(jsonEncode({
+      "type": "response",
+      "userId": userId,
+      "targetUserId": targetUserId,
+      "action": action,
+    }));
+    print("///////");
+    print("targetUserId: $targetUserId");
+    print("userId: $userId");
+    print("action: $action");
+    print("channel: $channel");
+    print("channel.sink: ${channel.sink}");
+    print("channel.stream: ${channel.stream}");
+
+  }
+
+  void sendSongUrl(int targetUserId, String songUrl, int? songDuration) {
+    final message = {
+      "type": "url",
+      "userId": userId,
+      "targetUserId": targetUserId,
+      "songUrl": songUrl,
+      "songDuration": songDuration ?? 0,
+    };
+
+    channel.sink.add(jsonEncode(message));
+    print("Song URL sent: $songUrl");
+    //print();
+  }
+
 
   void toggleSearch() {
     isSearching.value = !isSearching.value;
@@ -30,7 +193,7 @@ class JammingScreenController extends GetxController {
   }
 
   void clearSearch() {
-    filteredTracks.assignAll(spotifyPlaylists[selectedCategoryIndex.value]['playlists']);
+    filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
   }
 
   Future<void> filterSongs(String query) async {
@@ -47,32 +210,23 @@ class JammingScreenController extends GetxController {
         if (response.statusCode == 200) {
           final List<dynamic> data = json.decode(response.body);
 
-          // Update the filteredTracks list with the search results
           filteredTracks.assignAll(data.map((track) {
             return {
               'name': track['name'],
-              'uri': track['uri'],
-              'images': track['album']['images'],
-              'artist': track['artists'][0]['name'],
-              'album': track['album']['name'],
+              'uri': track['url'],
+              'images': [{'url': track['image']}],
             };
           }).toList());
-
-          print("Filtered tracks count: ${filteredTracks.length}");
         } else {
           Get.snackbar("Error", "Failed to load search results. Status code: ${response.statusCode}");
-          print('Failed to load search results. Status code: ${response.statusCode}');
         }
       } catch (e) {
         Get.snackbar("Error", "An error occurred while searching: $e");
-        print(e);
       } finally {
-        isLoading.value = false; // Hide loading indicator after search
+        isLoading.value = false;
       }
     }
   }
-
-
 
   void setSelectedSong(String song) {
     selectedSong.value = song;
@@ -85,7 +239,7 @@ class JammingScreenController extends GetxController {
   void setSelectedCategoryIndex(int index) {
     selectedCategoryIndex.value = index;
     selectedCategory.value = categories[index];
-    filteredTracks.assignAll(spotifyPlaylists[index]['playlists']);
+    filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
   }
 
   void setSelectedSongIndex(int index) {
@@ -94,68 +248,55 @@ class JammingScreenController extends GetxController {
 
   Future<void> openSpotifyTrack(String spotifyUri, {bool isArtist = false}) async {
     final Uri spotifyUrl = Uri.parse(spotifyUri);
-    final Uri spotifyWebUrl = isArtist
-        ? Uri.parse("https://open.spotify.com/artist/${spotifyUri.split(':').last}")
-        : Uri.parse("https://open.spotify.com/playlist/${spotifyUri.split(':').last}");
+    final Uri spotifyWebUrl = Uri.parse(spotifyUri);
     final Uri playStoreUrl = Uri.parse("https://play.google.com/store/apps/details?id=com.spotify.music");
 
-    print("Spotify URI: $spotifyUri");
-    print("Spotify web URL: $spotifyWebUrl");
-
     try {
-      // if (await canLaunch(spotifyUrl.toString())) {
-      //   await launch(spotifyUrl.toString(), forceSafariVC: false, forceWebView: false);
-      // } else {
-      //   await launch(spotifyWebUrl.toString(), forceSafariVC: false, forceWebView: false);
-      // }
       await launchUrl(
         spotifyWebUrl,
         mode: LaunchMode.inAppWebView,
       );
     } catch (e) {
-      // if (await canLaunch(playStoreUrl.toString())) {
-      //   await launch(playStoreUrl.toString());
-      // } else {
-      //   Get.snackbar("Error", "Could not launch Spotify, web link, or Play Store");
-      // }
-      // print(e);
       Get.snackbar("Error", "An error occurred while launching: $e");
-      print(e);
     }
   }
 
-
-  Future<void> fetchSpotifyCategoriesWithPlaylists() async {
+  Future<void> fetchSpotifyTracks() async {
+    print("The user id that send request is: $userId");
+    print("The target user id is: $targetUserId");
     try {
       isLoading.value = true;
       final response = await http.get(
-        Uri.parse('https://meet-around-apis-production.up.railway.app/spotify/categories-with-playlists'),
+        Uri.parse('https://meet-around-apis-production.up.railway.app/spotify/tracks'),
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        spotifyPlaylists.clear();
+        spotifyTracks.clear();
         categories.clear();
         for (var item in data) {
-          categories.add(item['categoryName']);
-          spotifyPlaylists.add(item);
+          spotifyTracks.add({
+            'name': item['name'],
+            'uri': item['url'],
+            'images': [{'url': item['image']}],
+            'category': item['category'],
+          });
+
+          if (!categories.contains(item['category'])) {
+            categories.add(item['category']);
+          }
         }
 
-        // Set default category and playlists
         if (categories.isNotEmpty) {
           selectedCategory.value = categories[0];
-          filteredTracks.assignAll(spotifyPlaylists[0]['playlists']);
+          filteredTracks.assignAll(spotifyTracks.where((track) => track['category'] == selectedCategory.value).toList());
         }
-
-        print('Number of categories fetched: ${categories.length}');
       } else {
-        Get.snackbar("Error", "Failed to load categories from Spotify. Status code: ${response.statusCode}");
-        print('Failed to load categories from Spotify. Status code: ${response.statusCode}');
+        Get.snackbar("Error", "Failed to load tracks from Spotify. Status code: ${response.statusCode}");
       }
     } catch (e) {
-      Get.snackbar("Error", "An error occurred while fetching categories: $e");
-      print(e);
+      Get.snackbar("Error", "An error occurred while fetching tracks: $e");
     } finally {
       isLoading.value = false;
     }

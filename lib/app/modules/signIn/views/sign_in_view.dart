@@ -19,6 +19,9 @@ class SignInView extends GetView<SignInController> {
   Widget build(BuildContext context) {
     final SignInController _controller = Get.find<SignInController>();
 
+    // Observable for password visibility
+    final RxBool _passwordVisible = false.obs;
+
     return Scaffold(
       backgroundColor: VoidColors.whiteColor,
       body: SingleChildScrollView(
@@ -44,28 +47,44 @@ class SignInView extends GetView<SignInController> {
               obscureText: false,
               hint: 'Email',
               prefix: Icon(Icons.email_outlined,
-                size: 24.sp, color: VoidColors.darkGrey),
+                  size: 24.sp, color: VoidColors.darkGrey),
             ),
-            CustomTextFormField(
+            Obx(() => CustomTextFormField(
               controller: _controller.passwordController,
-              obscureText: true,
+              obscureText: !_passwordVisible.value,
               hint: 'Password',
               prefix: Icon(Icons.lock_outline,
-                size: 24.sp, color: VoidColors.darkGrey),
-            ),
+                  size: 24.sp, color: VoidColors.darkGrey),
+              isPassword: true,
+              suffix: GestureDetector(
+                onTap: () {
+                  _passwordVisible.value = !_passwordVisible.value;
+                },
+                child: Icon(
+                  _passwordVisible.value
+                      ? Icons.visibility
+                      : Icons.visibility_off,
+                  color: VoidColors.darkGrey,
+                  size: 24.sp,
+                ),
+              ),
+            )),
             Padding(
-              padding:  EdgeInsets.only(right: 20.w,top: 5.h),
+              padding: EdgeInsets.only(right: 20.w, top: 5.h),
               child: GestureDetector(
-                onTap: (){
-                   Get.toNamed(Routes.RESET_PASSWORD);
+                onTap: () {
+                  Get.toNamed(Routes.RESET_PASSWORD);
                 },
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Text("Forget Password",style: GoogleFonts.poppins(
-                  fontWeight:FontWeight.w400,
-                  fontSize: 12.sp,
-                  color: VoidColors.redColor,
-                  ),),
+                  child: Text(
+                    "Forget Password",
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12.sp,
+                      color: VoidColors.redColor,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -75,19 +94,18 @@ class SignInView extends GetView<SignInController> {
               child: Obx(() {
                 return _controller.loading.value
                     ? CustomButtonWithLoader(
-                        
-                        borderRadius: 24.r,
-                      )
+                  borderRadius: 24.r,
+                )
                     : CustomButton(
-                        text: VoidTexts.signIn,
-                        onPressed: () {
-                          _controller.signIn(
-                            _controller.emailController.text,
-                            _controller.passwordController.text,
-                          );
-                        },
-                        borderRadius: 24.r,
-                      );
+                  text: VoidTexts.signIn,
+                  onPressed: () {
+                    _controller.signIn(
+                      _controller.emailController.text,
+                      _controller.passwordController.text,
+                    );
+                  },
+                  borderRadius: 24.r,
+                );
               }),
             ),
             SizedBox(height: 30.h),
@@ -134,7 +152,7 @@ class SignInView extends GetView<SignInController> {
               ),
               child: Center(
                 child: Image.asset(VoidImages.googleIcon,
-                  height: 32.h, width: 32.w),
+                    height: 32.h, width: 32.w),
               ),
             ),
             Row(
@@ -151,10 +169,10 @@ class SignInView extends GetView<SignInController> {
                 ),
                 InkWell(
                   onTap: () {
-                    Get.to(()=>SignupFormScreenView());
+                    Get.to(() => SignupFormScreenView());
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15.0.w, vertical: 5.0.h),
+                    padding: EdgeInsets.symmetric(horizontal: 5.0.w, vertical: 5.0.h),
                     child: Text(
                       VoidTexts.signUp,
                       textAlign: TextAlign.center,
@@ -172,8 +190,6 @@ class SignInView extends GetView<SignInController> {
           ],
         ).marginOnly(bottom: 30.0.h),
       ),
-   
     );
-  
   }
 }
