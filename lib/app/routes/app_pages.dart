@@ -12,6 +12,8 @@ import '../modules/PastInterections/bindings/past_interections_binding.dart';
 import '../modules/PastInterections/views/past_interections_view.dart';
 import '../modules/ProfileScreen/bindings/profile_screen_binding.dart';
 import '../modules/ProfileScreen/views/profile_screen_view.dart';
+import '../modules/ResetPassword/bindings/reset_password_binding.dart';
+import '../modules/ResetPassword/views/reset_password_view.dart';
 import '../modules/SearchScreen/bindings/search_screen_binding.dart';
 import '../modules/SearchScreen/views/search_screen_view.dart';
 import '../modules/Services/bindings/services_binding.dart';
@@ -170,8 +172,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SEARCH_SCREEN,
-      page: () =>  SearchScreen(),
+      page: () => SearchScreen(),
       binding: SearchScreenBinding(),
+    ),
+    GetPage(
+      name: _Paths.RESET_PASSWORD,
+      page: () => const ResetPasswordView(),
+      binding: ResetPasswordBinding(),
     ),
   ];
 }

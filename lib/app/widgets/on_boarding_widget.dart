@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scratch_project/app/widgets/custom_button.dart';
-
 import '../utils/constraints/colors.dart';
-
 
 class OnBoardingWidget extends StatelessWidget {
   final String imagePath;
   final String text;
-  final String? subTitle;
+  //final String? subTitle;
   final double? titleSize;
   final FontWeight? fontWeight;
   final String buttonText;
@@ -23,12 +21,14 @@ class OnBoardingWidget extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.text,
-   required this.buttonText,
+    required this.buttonText,
     required this.onButtonPressed,
     this.showNextButton = false,
     this.isCenteredText = false,
-    this.subTitle, this.fontSize,
-    this.titleSize, this.fontWeight,
+   // this.subTitle,
+    this.fontSize,
+    this.titleSize,
+    this.fontWeight,
     this.onTap,
   });
 
@@ -57,14 +57,11 @@ class OnBoardingWidget extends StatelessWidget {
                 ),
               ],
             ),
-
-             SizedBox(height: 70.h,),
+          SizedBox(height: 70.h,),
           Expanded(
-            child:
-               Image.asset(imagePath),
-          
+            child: Image.asset(imagePath),
           ),
-         SizedBox(height: 100.h,),
+          SizedBox(height: 100.h,),
           Expanded(
             child: Text(
               text,
@@ -76,41 +73,8 @@ class OnBoardingWidget extends StatelessWidget {
               ),
             ),
           ),
-          if (isCenteredText)
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: 30.0.h),
-                child: Text(
-                  subTitle!,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.poppins(
-                      fontSize: fontSize,
-                      color: VoidColors.whiteColor,
-                      fontWeight: FontWeight.w600
-                  ),
-                ),
-              ),
-            ),
-          if (!isCenteredText)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 15.0.h),
-                  child: SizedBox(
-                    height: 30.h,
-                    child: CustomButton(
-                      text: buttonText,
-                      width: 123.w,
-                      onPressed: onButtonPressed,
-                      textColor: VoidColors.blackColor,
-                      color: VoidColors.whiteColor,
-                      borderRadius: 40.0.r,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          
+         
         ],
       ),
     );

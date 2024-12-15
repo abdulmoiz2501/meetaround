@@ -1,14 +1,5 @@
-import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:scratch_project/app/controllers/user_controller.dart';
-import 'package:scratch_project/app/utils/constraints/colors.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:web_socket_client/web_socket_client.dart';
-
 class LocationWebSocketController extends GetxController {
   // late WebSocket _channel;
   // bool isConnected = false;

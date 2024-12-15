@@ -11,6 +11,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../../../utils/constraints/colors.dart';
 
 class SignUpController extends GetxController {
+  var isLoading = false.obs;
   var accept = false.obs;
   var loading = false.obs;
   Rx<XFile?> imgFile = Rx<XFile?>(null);
@@ -250,7 +251,6 @@ class SignUpController extends GetxController {
           'profile_picture', imgFile.value!.path);
       request.files.add(file);
     }
-
     try {
       loading(true);
       print('Sending request to $apiUrl with fields: ${request.fields}');
@@ -288,6 +288,7 @@ class SignUpController extends GetxController {
   }
 
   Future<void> getCurrentLocation() async {
+    isLoading.value = true;
     bool serviceEnabled;
     LocationPermission permission;
 
@@ -295,6 +296,7 @@ class SignUpController extends GetxController {
     if (!serviceEnabled) {
       Get.snackbar('Error', 'Location services are disabled.',
           backgroundColor: VoidColors.primary, colorText: VoidColors.secondary);
+      isLoading.value = false;
       return;
     }
 
@@ -305,6 +307,7 @@ class SignUpController extends GetxController {
         Get.snackbar('Error', 'Location permissions are denied.',
             backgroundColor: VoidColors.primary,
             colorText: VoidColors.secondary);
+        isLoading.value = false;
         return;
       }
     }
@@ -315,6 +318,7 @@ class SignUpController extends GetxController {
           backgroundColor: VoidColors.primary,
           colorText: VoidColors.whiteColor,
           snackPosition: SnackPosition.BOTTOM);
+      isLoading.value = false;
       return;
     }
 
@@ -322,6 +326,7 @@ class SignUpController extends GetxController {
         desiredAccuracy: LocationAccuracy.high);
     latitude.value = position.latitude;
     longitude.value = position.longitude;
+    isLoading.value = false;
   }
 
   void connectWebSocket() {
@@ -352,5 +357,4 @@ class SignUpController extends GetxController {
           snackPosition: SnackPosition.BOTTOM);
     });
   }
-
 }

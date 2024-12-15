@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:get/get.dart';
+import 'package:scratch_project/app/modules/onBoarding/views/onboarding_view.dart';
 import 'package:scratch_project/app/routes/app_pages.dart';
 
 import '../../../utils/constraints/colors.dart';
@@ -43,7 +44,7 @@ class SecondSplashView extends GetView {
                     textColor: VoidColors.blackColor,
                     borderRadius: 24.r,
                   onPressed: () {
-                      Get.toNamed(Routes.ONBOARDING);
+                      Get.offAll(()=>OnBoardingView());
                   },
                 ),
 
